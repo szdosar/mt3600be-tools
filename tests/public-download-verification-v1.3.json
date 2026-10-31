@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "releases": [
+    {
+      "tag": "passwall2-native-r4.3",
+      "file": "passwall2-high-native-r4.3.run",
+      "sha256": "7651ad40e4bc429f4a28ac829e02d4af5b5d9923d9cb76b2aca42a301cc6e488",
+      "bytes": 41489723,
+      "anonymous_public_download_matches": true
+    },
+    {
+      "tag": "online-v1.3",
+      "file": "install.sh",
+      "sha256": "1bf93767c99771a5b34c74d6c7c3ae90706927250386fc955008222e2e4221c8",
+      "bytes": 10213,
+      "anonymous_public_download_matches": true
+    }
+  ],
+  "no_execution_or_router_install": true
+}
