@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "tests_run": 7,
+  "failures": 0,
+  "errors": 0,
+  "bootstrap_sha256": "bf4220766d77f6e83d708e58eeae47b10f4492deadf7969a34be5074fe2e36b0",
+  "launcher_sha256": "cc5a17f1b939306e3f657a0099e2fa951ce36616b3845faff7c68e098e1dec61",
+  "no_router": true
+}

@@ -1,0 +1,6 @@
+luci-app-passwall2
+luci-i18n-passwall2-zh-cn
+xray-core
+shadowsocks-rust-sslocal
+haproxy
+sing-box

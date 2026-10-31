@@ -1,0 +1,29 @@
+[
+  {
+    "tool": "eee-official",
+    "tag": "eee-v1.2-r3",
+    "file": "mt3600be-eee-tool-v1.2-r3.run",
+    "sha256": "baaeaafb216f845270bb477605ffa3889c166758e953454dfabee3403738efbb",
+    "bytes": 46000,
+    "platform": "4.9.1-op25 / Linux 6.12.94",
+    "url": "https://github.com/szdosar/mt3600be-tools/releases/download/eee-v1.2-r3/mt3600be-eee-tool-v1.2-r3.run"
+  },
+  {
+    "tool": "eee-lede",
+    "tag": "eee-lede-v1",
+    "file": "mt3600be-eee-tool-lede-v1.run",
+    "sha256": "4ed3294a9cd45086883d722b48436205fcaea95112eaba54bf9a5105bb7248de",
+    "bytes": 42907,
+    "platform": "LEDE R26.10.31 / Linux 6.12.115",
+    "url": "https://github.com/szdosar/mt3600be-tools/releases/download/eee-lede-v1/mt3600be-eee-tool-lede-v1.run"
+  },
+  {
+    "tool": "passwall2",
+    "tag": "passwall2-native-r4.2",
+    "file": "passwall2-high-native-r4.2.run",
+    "sha256": "628edf81254ae180c5a0cb168db9bc31341a2a6cbbf63ee58e5be86ab9b472ad",
+    "bytes": 41489241,
+    "platform": "原厂 OpenWrt 25.12.5 / Linux 6.12.94",
+    "url": "https://github.com/szdosar/mt3600be-tools/releases/download/passwall2-native-r4.2/passwall2-high-native-r4.2.run"
+  }
+]

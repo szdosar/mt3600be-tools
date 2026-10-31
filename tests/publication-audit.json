@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "router_connected": false,
+  "tests": 35,
+  "launcher_sha256": "cc5a17f1b939306e3f657a0099e2fa951ce36616b3845faff7c68e098e1dec61",
+  "no_credentials_or_router_backups_in_publication": true,
+  "releases": [
+    {
+      "tag": "eee-v1.2-r3",
+      "sha256": "baaeaafb216f845270bb477605ffa3889c166758e953454dfabee3403738efbb",
+      "bytes": 46000,
+      "archive_files": 10,
+      "archive_allowlist_verified": true
+    },
+    {
+      "tag": "eee-lede-v1",
+      "sha256": "4ed3294a9cd45086883d722b48436205fcaea95112eaba54bf9a5105bb7248de",
+      "bytes": 42907,
+      "archive_files": 10,
+      "archive_allowlist_verified": true
+    },
+    {
+      "tag": "passwall2-native-r4.2",
+      "sha256": "628edf81254ae180c5a0cb168db9bc31341a2a6cbbf63ee58e5be86ab9b472ad",
+      "bytes": 41489241,
+      "archive_files": 110,
+      "archive_allowlist_verified": true
+    }
+  ]
+}

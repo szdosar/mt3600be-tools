@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.run
+*.apk
+*.bin
+*.zip
+*.key
+*.pem
+.env*
+backups/
+runtime/
+state/

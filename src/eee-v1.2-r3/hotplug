@@ -1,0 +1,6 @@
+#!/bin/sh
+# Only this patch is invoked; never reload network or other services.
+case "$ACTION" in ifup|ifupdate) ;; *) exit 0;; esac
+[ "$DEVICE" = eth0 ] || exit 0
+[ ! -e /etc/mt3600be-wan-eee/disabled ] || exit 0
+/usr/sbin/mt3600be-wan-eee apply >/dev/null 2>&1 || :

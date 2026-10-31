@@ -1,0 +1,79 @@
+#!/bin/sh
+# Scoped workaround: GL-MT3600BE, GL.iNet 4.9.1-op25, Linux 6.12.94.
+set -eu
+STATE=/etc/mt3600be-wan-eee
+HELPER=/usr/libexec/mt3600be-eee-state
+SERVICE=/etc/init.d/mt3600be-wan-eee
+LOCK=/var/lock/mt3600be-wan-eee.lock
+guard() {
+ [ "$(cat /tmp/sysinfo/board_name)" = glinet,gl-mt3600be ] &&
+ [ "$(uname -r)" = 6.12.94 ] &&
+ [ "$(cat /etc/glversion)" = 4.9.1-op25 ] &&
+ grep -q '^DRIVER=RTL8221B-VB-CG 2.5Gbps PHY (C45)$' /sys/class/net/eth0/phydev/uevent
+}
+verify() {
+ [ -f "$STATE/installed" ] && [ ! -L "$STATE" ] || return 1
+ (cd /; sha256sum -c "$STATE/files.sha256" >/dev/null) || return 1
+ (cd "$STATE"; sha256sum -c original.sha256 >/dev/null)
+}
+lock() { exec 9>"$LOCK"; flock -n 9; }
+snapshot_hash() {
+ [ -f "$STATE/original.sha256" ] && [ ! -L "$STATE/original.sha256" ] || return 1
+ IFS=' ' read -r hash name extra < "$STATE/original.sha256" || return 1
+ [ "${#hash}" = 64 ] && [ "$name" = original.bin ] && [ -z "$extra" ] || return 1
+ case "$hash" in *[!0-9a-f]*) return 1;; esac
+ printf '%s\n' "$hash"
+}
+apply_locked() {
+ [ ! -e "$STATE/disabled" ] || return 0
+ guard || { echo 'Unsupported firmware or PHY; no changes.' >&2; return 1; }
+ v=$("$HELPER" read) || return 1
+ case "$v" in
+  'eee_enabled=0 '*tx_lpi_enabled=0*' advertised=0x0 '*phy7_mmd7_003c=0x0000) return 0;;
+ esac
+ "$HELPER" disable || return 1
+ logger -t mt3600be-wan-eee 'WAN eth0 EEE disabled; configuration files unchanged.'
+}
+case "${1:-status}" in
+ status)
+  if [ -f "$STATE/rolled-back" ]; then echo 'mode=rolled-back';
+  elif [ -f "$STATE/disabled" ]; then echo 'mode=disabled-or-rollback-pending';
+  elif [ -f "$STATE/installed" ]; then echo 'mode=enabled'; else echo 'mode=not-installed'; fi
+  guard && "$HELPER" read
+  ;;
+ apply)
+  lock || exit 75
+  verify
+  apply_locked
+  ;;
+ run)
+  while :; do
+   "$0" apply || logger -t mt3600be-wan-eee 'Apply deferred/failed; retry in 30 seconds.'
+   sleep 30
+  done
+  ;;
+ rollback)
+  lock || exit 75
+  verify
+  guard
+  expected=$(snapshot_hash) || { echo 'Snapshot digest invalid; no restore.' >&2; exit 1; }
+  # Marker is created before stopping service, so interrupted rollback stays off.
+  : > "$STATE/disabled"
+  "$SERVICE" disable
+  "$SERVICE" stop
+  "$HELPER" restore-checked "$STATE/original.bin" "$expected"
+  : > "$STATE/rolled-back"
+  echo 'Original EEE restored; startup disabled. Backup and tools retained.'
+  ;;
+ enable)
+  lock || exit 75
+  verify
+  guard
+  rm -f "$STATE/rolled-back" "$STATE/disabled"
+  apply_locked
+  "$SERVICE" enable
+  "$SERVICE" start
+  echo 'WAN EEE workaround enabled.'
+  ;;
+ *) echo 'Usage: mt3600be-wan-eee {status|apply|rollback|enable}' >&2; exit 2;;
+esac
