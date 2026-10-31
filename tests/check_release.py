@@ -19,8 +19,14 @@ for p in D.rglob('*'):
  assert p.name not in ['shadow','authorized_keys','original.bin','config.yaml','identity.secret','authtoken.secret'],p
  data=p.read_bytes();assert not re.search(rb'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}',data),p
 for name in ['install.sh','bootstrap.sh','install.sha256','README.md','catalog.json']:
- assert (A/'online-v1.2.1'/name).read_bytes()==(D/name).read_bytes(),name
+ assert (A/'online-v1.3'/name).read_bytes()==(D/name).read_bytes(),name
 cat=json.loads((D/'catalog.json').read_text());rows=[]
+pw=json.loads((D/'tests/passwall2-r4.3-validation.json').read_text())
+assert pw['release']=='native-r4.3' and pw['regression']['passed'] and pw['regression']['tests_run']==113
+assert pw['envelope']['passed'] and pw['envelope']['tests_run']==10 and pw['target_ARM_APK_UCI']['target_empty_archive_restored_configs']
+assert pw['artifact']['sha256']==cat[1]['sha256'] and pw['artifact']['bytes']==cat[1]['bytes']
+assert pw['regression']['source_sha256']['controller.sh']==sha(D/'src/passwall2-native-r4.3/controller.sh')
+
 assert [x['tool'] for x in cat]==['eee-official','passwall2']
 f=json.loads((D/'firmware.json').read_text());assert f['sha256']=='d4f65c9c44d0516a798fcf1b111ed7e8bdb54c9533202d02ac53c35d5e81239c'
 assert all(x['tested_firmware']==f['release_url'] for x in cat)

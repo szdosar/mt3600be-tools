@@ -76,7 +76,7 @@ while [ -e /fixture/hold-child ]; do sleep 0.05; done
    time.sleep(.025)
   self.fail('timed out: '+n)
  def assertok(self,q):self.assertEqual(0,q.returncode,q.stdout+q.stderr)
- def cache(self):return self.r/'root/mt3600be-tools/passwall2/passwall2-native-r4.2/passwall2-high-native-r4.2.run'
+ def cache(self):return self.r/'root/mt3600be-tools/passwall2/passwall2-native-r4.3/passwall2-high-native-r4.3.run'
  def clean(self):self.assertFalse(list((self.r/'tmp').glob('mt3600be-online.*')));self.assertFalse(list((self.r/'root').rglob('.download.*')))
  def test_01_actual_no_stat_both_tools_and_repeat(self):
   q=self.cmd('/bin/sh','-c','command -v stat; /qemu /arm/busybox stat --help');self.assertNotEqual(0,q.returncode);self.assertIn('applet not found',q.stderr)

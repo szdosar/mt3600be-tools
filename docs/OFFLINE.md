@@ -12,12 +12,12 @@ sh ./mt3600be-eee-tool-v1.2-r3.run status
 
 回滚时，把最后一行的 `status` 改成 `rollback`。EEE run 会再次要求输入 YES；也支持 enable 重新启用。
 
-## passwall2 / passwall2-native-r4.2
+## passwall2 / passwall2-native-r4.3
 
 ```sh
-cd /root/mt3600be-tools/passwall2/passwall2-native-r4.2 &&
-printf '%s  %s\n' '628edf81254ae180c5a0cb168db9bc31341a2a6cbbf63ee58e5be86ab9b472ad' 'passwall2-high-native-r4.2.run' | sha256sum -c - &&
-sh ./passwall2-high-native-r4.2.run status
+cd /root/mt3600be-tools/passwall2/passwall2-native-r4.3 &&
+printf '%s  %s\n' '628edf81254ae180c5a0cb168db9bc31341a2a6cbbf63ee58e5be86ab9b472ad' 'passwall2-high-native-r4.3.run' | sha256sum -c - &&
+sh ./passwall2-high-native-r4.3.run status
 ```
 
 回滚时，把最后一行的 `status` 改成 `rollback --apply`。Passwall2 的 --apply 表示你明确同意回滚，先关闭正在运行的代理。

@@ -1,9 +1,9 @@
 # 验证记录与边界
 
-- Passwall2 native-r4.2：既有 99 项断网隔离回归、10 项 run 检查、真实 ARM APK/UCI 隔离安装回滚、23 个 APK 与索引验签通过；未在路由器上安装本版。见 [详细记录](passwall2-validation.md)。
+- Passwall2 native-r4.3：既有 113 项断网隔离回归、10 项 run 检查、真实 ARM APK/UCI 隔离安装回滚、23 个 APK 与索引验签通过；未在路由器上安装本版。见 [详细记录](passwall2-validation.md)。
 - 原厂 EEE v1.2-r3：既有隔离测试及此前用户断电后的真机状态验收记录；不把状态检查当作千兆峰值或全部网络质量证明。
-- online-v1.2 / online-v1.2.1：32 项入口回归、7 项启动命令回归、18 项目标 ARM 环境测试；覆盖无 stat、元数据故障、权限/链接拒绝、锁身份替换、双终端、TERM/KILL 中断重试及独立副本执行。结果与当前入口摘要分别见 [入口](../tests/results.json)、[启动命令](../tests/bootstrap-results.json)、[目标环境](../tests/target-results.json)。
+- online-v1.3：32 项入口回归、7 项启动命令回归、18 项目标 ARM 环境测试；覆盖无 stat、元数据故障、权限/链接拒绝、锁身份替换、双终端、TERM/KILL 中断重试及独立副本执行。结果与当前入口摘要分别见 [入口](../tests/results.json)、[启动命令](../tests/bootstrap-results.json)、[目标环境](../tests/target-results.json)。
 - 目标环境是原厂 ARM BusyBox、ucode、fs.so 的 QEMU+bwrap 断网隔离环境；下载/组件执行使用替身，未连接路由器，不能作为真实安装或物理断电验收。宿主机回归通过不能替代目标命令集合检查。
 - 发布门禁要求三组测试全部通过且摘要与当前代码相符；核对 run 字节与清单不变、归档文件白名单及凭据模式，再发布。发布后从公开 URL 重新下载入口核对摘要，不执行安装。
 
-本次只修改在线入口，未修改 EEE/Passwall2 组件、run 包或原始固件。互斥协调本工具，不承诺隔离任意不遵守锁的 root 程序。旧版发布保留对照。[兼容修复与恢复说明](ONLINE-v1.2.md)。
+本次更新 Passwall2 run 的空事务处理及在线入口引用；APK、索引、EEE run 和原始固件不变。互斥协调本工具，不承诺隔离任意不遵守锁的 root 程序。旧版发布保留对照。[本版说明](ONLINE-v1.3.md)。

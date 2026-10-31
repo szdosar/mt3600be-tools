@@ -38,15 +38,15 @@ trap 'rm -f -- "$t"' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 trap '' HUP
-curl -q --fail --location --proto '=https' --proto-redir '=https' --connect-timeout 15 --max-time 120 --max-filesize 1048576 --output "$t" https://github.com/szdosar/mt3600be-tools/releases/download/online-v1.2.1/install.sh
+curl -q --fail --location --proto '=https' --proto-redir '=https' --connect-timeout 15 --max-time 120 --max-filesize 1048576 --output "$t" https://github.com/szdosar/mt3600be-tools/releases/download/online-v1.3/install.sh
 [ -s "$t" ]
-printf '%s  %s\n' 'eca4a13e7cf30cdfec72e1ae39c53a2429310963864c5d8dc5d8a37f35d74514' "$t" | sha256sum -c -
+printf '%s  %s\n' '1bf93767c99771a5b34c74d6c7c3ae90706927250386fc955008222e2e4221c8' "$t" | sha256sum -c -
 sh -n "$t"
 sh "$t"
  )
 ```
 
-当前在线入口为 **online-v1.2.1**。无需另装 `stat`：缺少时自动使用目标固件自带的 `ucode` 文件系统接口，继续核对类型、权限、大小和锁身份；任一检查失败都停止。
+当前在线入口为 **online-v1.3**。无需另装 `stat`：缺少时自动使用目标固件自带的 `ucode` 文件系统接口，继续核对类型、权限、大小和锁身份；任一检查失败都停止。
 
 需要可正常验证 HTTPS 的网络和系统时间，以及 `curl`、`sha256sum`、`flock`。缺少命令会停止，不自动改软件源、代理或 DNS。此前看到“缺少 stat”的用户，重新复制本页最新整段命令即可，不必删除旧配置、缓存、事务或备份。首次下载失败可重试同一段命令；不要使用 `-k` 或关闭校验，也不要使用来历不明的加速镜像。无需 GitHub 登录、Token 或提供路由器密码给脚本。
 
@@ -55,9 +55,9 @@ sh "$t"
 | 菜单 | 支持范围 | 用途 |
 |---|---|---|
 | 原厂 WAN EEE v1.2-r3 | 上述官方 op25 测试版 / RTL8221B | 规避 1G WAN 链路下与 EEE 相关的丢包，支持查询和回滚 |
-| 原厂 Passwall2 native-r4.2 | 上述官方 op25 测试版，先安装 LuCI | 科学研究、代理与分流管理；Passwall2 26.10.20-r2 + Xray 26.10.21-r2，含匹配依赖 |
+| 原厂 Passwall2 native-r4.3 | 上述官方 op25 测试版，先安装 LuCI | 科学研究、代理与分流管理；Passwall2 26.10.20-r2 + Xray 26.10.21-r2，含匹配依赖 |
 
-其他型号、固件或内核不支持，不能删除版本检查强装。不自动把几个工具同时安装。EEE 只处理 WAN，不修改 LAN。Passwall2 r4.2 完成隔离测试，仍为待用户真机验证的试用包。
+其他型号、固件或内核不支持，不能删除版本检查强装。不自动把几个工具同时安装。EEE 只处理 WAN，不修改 LAN。Passwall2 r4.3 完成隔离测试，仍为待用户真机验证的试用包。
 
 ## 下载与断线恢复
 
@@ -73,6 +73,6 @@ sh "$t"
 
 EEE 安装可能短暂重新协商 WAN 链路，建议从 LAN 管理；回滚恢复已保存的原始 EEE，不改 DNS、VPN、无线或插件配置。
 
-Passwall2 保留原生安装行为，可能更新 DHCP `localuse`、防火墙 include、uhttpd、ucitrack；已有主开关开启时可能启动代理。保留两份插件配置的内容和权限（含 root:root 664），默认模板另存。回滚只卸载本次新增包并恢复记录的接入修改；后续配置冲突会拒绝覆盖。旧 r4/r4.1 正式事务不自动接管；仅权限预检失败可换本版重试。
+Passwall2 保留原生安装行为，可能更新 DHCP `localuse`、防火墙 include、uhttpd、ucitrack；已有主开关开启时可能启动代理。保留两份插件配置的内容和权限（含 root:root 664），默认模板另存。回滚只卸载本次新增包并恢复记录的接入修改；后续配置冲突会拒绝覆盖。旧 r4/r4.1/r4.2 正式事务不自动接管；仅预检失败或事务仅剩空目录时可换本版重试。空目录持锁确认后原子归档；任何实际记录缺失或损坏仍拒绝，不删配置和备份。
 
 本仓库发布原始测试固件镜像、工具源码、公共默认内容和验证摘要，不发布设备配置、节点、密码、密钥或备份。不要把路由器事务目录上传到 Issue。工具按固定版本发布；后续更新使用新版本号，不替换既有 run 文件。

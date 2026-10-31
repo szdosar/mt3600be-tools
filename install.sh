@@ -1,5 +1,5 @@
 #!/bin/sh
-# MT3600BE online tools v1.2.1. Fixed releases; no remote shell evaluation.
+# MT3600BE online tools v1.3. Fixed releases; no remote shell evaluation.
 set -eu
 umask 077
 PATH=/usr/sbin:/usr/bin:/sbin:/bin; export PATH
@@ -70,7 +70,7 @@ meta identity / >/dev/null && meta identity-follow / >/dev/null || fail '文件�
 TOOL=${1:-}; ACTION=${2:-}
 if [ -z "$TOOL" ]; then
  usage
- printf '\n1 WAN EEE v1.2-r3：1G 有线 WAN 丢包修复（指定 op25）\n2 Passwall2 native-r4.2：网络代理与科学研究（先安装 LuCI）\n0 退出\n请选择：'
+ printf '\n1 WAN EEE v1.2-r3：1G 有线 WAN 丢包修复（指定 op25）\n2 Passwall2 native-r4.3：网络代理与科学研究（先安装 LuCI）\n0 退出\n请选择：'
  IFS= read -r answer || exit 0
  case "$answer" in 1) TOOL=eee-official;; 2) TOOL=passwall2;; 0|'') exit 0;; *) fail '无效选择';; esac
 fi
@@ -80,8 +80,8 @@ case "$TOOL" in
   SHA=baaeaafb216f845270bb477605ffa3889c166758e953454dfabee3403738efbb; SIZE=46000
   [ "$(uname -r)" = 6.12.94 ] && [ "$(cat /etc/glversion 2>/dev/null)" = 4.9.1-op25 ] || fail '原厂 EEE 版本不匹配。';;
  passwall2)
-  TAG=passwall2-native-r4.2; ASSET=passwall2-high-native-r4.2.run
-  SHA=628edf81254ae180c5a0cb168db9bc31341a2a6cbbf63ee58e5be86ab9b472ad; SIZE=41489241
+  TAG=passwall2-native-r4.3; ASSET=passwall2-high-native-r4.3.run
+  SHA=7651ad40e4bc429f4a28ac829e02d4af5b5d9923d9cb76b2aca42a301cc6e488; SIZE=41489723
   [ "$(uname -r)" = 6.12.94 ] && grep -qx "DISTRIB_RELEASE='25.12.5'" /etc/openwrt_release || fail '原厂 Passwall2 版本不匹配。';;
  *) fail '未知工具';;
 esac

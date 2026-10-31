@@ -2,7 +2,7 @@
   "passed": true,
   "router_connected": false,
   "tests": 57,
-  "launcher_sha256": "eca4a13e7cf30cdfec72e1ae39c53a2429310963864c5d8dc5d8a37f35d74514",
+  "launcher_sha256": "1bf93767c99771a5b34c74d6c7c3ae90706927250386fc955008222e2e4221c8",
   "no_credentials_or_router_backups_in_publication": true,
   "releases": [
     {
@@ -13,9 +13,9 @@
       "archive_allowlist_verified": true
     },
     {
-      "tag": "passwall2-native-r4.2",
-      "sha256": "628edf81254ae180c5a0cb168db9bc31341a2a6cbbf63ee58e5be86ab9b472ad",
-      "bytes": 41489241,
+      "tag": "passwall2-native-r4.3",
+      "sha256": "7651ad40e4bc429f4a28ac829e02d4af5b5d9923d9cb76b2aca42a301cc6e488",
+      "bytes": 41489723,
       "archive_files": 110,
       "archive_allowlist_verified": true
     }
