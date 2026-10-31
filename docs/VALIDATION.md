@@ -7,6 +7,6 @@
 公开发布复用原 run 字节，未修改 EEE 或 Passwall2 组件。在线菜单不会扩展其硬件、固件或事务兼容范围。互斥锁协调本工具，不承诺隔离任意不遵守锁的 root 程序。
 
 
-online-v1.1 撤下 LEDE 选项，增加两个公开工具统一的官方 op25 测试版完整版本字段检查。两个 run 字节与原发布一致；未重打包或改动原生功能。
+在线入口提供 EEE 与 Passwall2 两项工具，统一核对指定官方 op25 测试版的完整版本字段。
 
-2026-10-31 已从本仓库公开 Releases 匿名重下原始固件镜像及 online-v1.1/install.sh，摘要与上游/本地记录一致；两个 run 的 GitHub 附件摘要保持不变。公开 LEDE Release 和含其菜单的 online-v1 已撤下，本机及私有仓库历史保留。[发布后校验记录](../tests/public-download-verification.json)。未刷机或安装。
+2026-10-31 已从本仓库公开 Releases 匿名重下原始固件镜像及 online-v1.1/install.sh，摘要与上游/本地记录一致；两个 run 的 GitHub 附件摘要保持不变。[发布后校验记录](../tests/public-download-verification.json)。未刷机或安装。

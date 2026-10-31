@@ -82,8 +82,8 @@ exec /bin/sh "$@"
   self.assertEqual(0,self.call('passwall2','rollback',input='\n').returncode);self.noexec();self.assertEqual(0,self.call('passwall2','rollback',input='YES\n').returncode);self.assertEqual('rollback --apply\n',(self.d/'actions').read_text())
  def test_18_EEE_official_command_and_decline(self):
   self.assertEqual(0,self.call('eee-official','install',input='YES\n').returncode);self.assertEqual('install --yes\n',(self.d/'actions').read_text());self.assertEqual(0,self.call('eee-official','rollback',input='NO\n').returncode);self.assertEqual(1,len((self.d/'actions').read_text().splitlines()))
- def test_19_removed_LEDE_refuses_without_download(self):
-  self.assertNotEqual(0,self.call('eee-lede','download').returncode);(self.d/'kernel').write_text('6.12.115\n');self.assertNotEqual(0,self.call('eee-lede','install',input='YES\n').returncode);self.noexec();self.assertFalse((self.d/'downloads').exists())
+ def test_19_unknown_tool_refuses_without_download(self):
+  self.assertNotEqual(0,self.call('unsupported-tool','download').returncode);(self.d/'kernel').write_text('6.12.115\n');self.assertNotEqual(0,self.call('unsupported-tool','install',input='YES\n').returncode);self.noexec();self.assertFalse((self.d/'downloads').exists())
  def test_20_unknown_action_refuses(self):self.assertNotEqual(0,self.call('passwall2','enable').returncode);self.noexec()
  def test_21_bad_cache_permissions_not_changed(self):
   self.call('passwall2','download');self.cache().chmod(0o666);self.assertNotEqual(0,self.call('passwall2','check').returncode);self.assertEqual(0o666,self.cache().stat().st_mode&0o777);self.noexec()
