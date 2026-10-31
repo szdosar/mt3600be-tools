@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "tag": "online-v1.2",
+  "url": "https://github.com/szdosar/mt3600be-tools/releases/download/online-v1.2/install.sh",
+  "downloaded_sha256": "8edfd7b9885068d002de410e3cc8f5c10febef05b4e00c328a6da49af48d5100",
+  "bytes": 9642,
+  "anonymous_https_download": true,
+  "release_checksum_manifest_matches_local": true,
+  "bootstrap_and_readme_pin_match": true,
+  "syntax_check": true,
+  "executed": false,
+  "router_connected": false
+}
