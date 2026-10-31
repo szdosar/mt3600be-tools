@@ -4,7 +4,7 @@ from pathlib import Path
 import base64,hashlib,io,json,re,sys,tarfile
 D=Path(__file__).resolve().parents[1];A=Path(sys.argv[1]);sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 a=json.loads((D/'tests/results.json').read_text());b=json.loads((D/'tests/bootstrap-results.json').read_text())
-assert a['passed'] and a['tests_run']==28 and not a['skipped'] and a['source_sha256']==sha(D/'install.sh')
+assert a['passed'] and a['tests_run']==32 and not a['skipped'] and a['source_sha256']==sha(D/'install.sh')
 assert b['passed'] and b['tests_run']==7 and b['bootstrap_sha256']==sha(D/'bootstrap.sh') and b['launcher_sha256']==sha(D/'install.sh')
 assert sha(D/'install.sh') in (D/'README.md').read_text()
 for line in (D/'sources.sha256').read_text().splitlines():
@@ -17,6 +17,9 @@ for p in D.rglob('*'):
  assert p.name not in ['shadow','authorized_keys','original.bin','config.yaml','identity.secret','authtoken.secret'],p
  data=p.read_bytes();assert not re.search(rb'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}',data),p
 cat=json.loads((D/'catalog.json').read_text());rows=[]
+assert [x['tool'] for x in cat]==['eee-official','passwall2']
+f=json.loads((D/'firmware.json').read_text());assert f['sha256']=='d4f65c9c44d0516a798fcf1b111ed7e8bdb54c9533202d02ac53c35d5e81239c'
+assert all(x['tested_firmware']==f['release_url'] for x in cat)
 for x in cat:
  p=A/x['tag']/x['file'];assert sha(p)==x['sha256'] and p.stat().st_size==x['bytes'],p
  raw=p.read_bytes()
@@ -37,5 +40,5 @@ for x in cat:
   if expected is not None:assert set(names)==expected and len(names)==len(expected)
   else:assert len(names)==len(set(names))
  rows.append({'tag':x['tag'],'sha256':sha(p),'bytes':p.stat().st_size,'archive_files':len(names),'archive_allowlist_verified':True})
-result={'passed':True,'router_connected':False,'tests':35,'launcher_sha256':sha(D/'install.sh'),'no_credentials_or_router_backups_in_publication':True,'releases':rows}
+result={'passed':True,'router_connected':False,'tests':39,'launcher_sha256':sha(D/'install.sh'),'no_credentials_or_router_backups_in_publication':True,'releases':rows}
 (D/'tests/publication-audit.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))

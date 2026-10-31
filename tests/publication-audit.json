@@ -1,21 +1,14 @@
 {
   "passed": true,
   "router_connected": false,
-  "tests": 35,
-  "launcher_sha256": "cc5a17f1b939306e3f657a0099e2fa951ce36616b3845faff7c68e098e1dec61",
+  "tests": 39,
+  "launcher_sha256": "5887dfe4670f47f8d614f100da46ad2e97fcdc868492a93498b4cfec0923033f",
   "no_credentials_or_router_backups_in_publication": true,
   "releases": [
     {
       "tag": "eee-v1.2-r3",
       "sha256": "baaeaafb216f845270bb477605ffa3889c166758e953454dfabee3403738efbb",
       "bytes": 46000,
-      "archive_files": 10,
-      "archive_allowlist_verified": true
-    },
-    {
-      "tag": "eee-lede-v1",
-      "sha256": "4ed3294a9cd45086883d722b48436205fcaea95112eaba54bf9a5105bb7248de",
-      "bytes": 42907,
       "archive_files": 10,
       "archive_allowlist_verified": true
     },

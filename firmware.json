@@ -1,0 +1,15 @@
+{
+  "release_url": "https://github.com/wukongdaily/gl-inet-onescript/releases/tag/mt3600be",
+  "download_page_owner": "wukongdaily/gl-inet-onescript (third-party download page)",
+  "filename": "openwrt25.12.5-mediatek-filogic-glinet_gl-mt3600be-squashfs-sysupgrade.bin",
+  "bytes": 77821158,
+  "sha256": "d4f65c9c44d0516a798fcf1b111ed7e8bdb54c9533202d02ac53c35d5e81239c",
+  "glversion": "4.9.1-op25",
+  "openwrt_release": "25.12.5",
+  "openwrt_revision": "r33051-f5dae5ece4",
+  "kernel": "6.12.94",
+  "arch": "aarch64_cortex-a53",
+  "local_original_image_digest_matches_release_asset": true,
+  "mirror_release_url": "https://github.com/szdosar/mt3600be-tools/releases/tag/firmware-op25-25.12.5",
+  "fresh_download_digest_matches": true
+}

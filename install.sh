@@ -1,5 +1,5 @@
 #!/bin/sh
-# MT3600BE online tools v1. Fixed releases; no remote shell evaluation.
+# MT3600BE online tools v1.1. Fixed releases; no remote shell evaluation.
 set -eu
 umask 077
 PATH=/usr/sbin:/usr/bin:/sbin:/bin; export PATH
@@ -19,7 +19,7 @@ trap signal_stop INT TERM
 trap '' HUP
 usage() {
  echo 'MT3600BE 工具：安装、查询、回滚；不刷机、不自动重启。'
- echo '用法：sh install.sh [eee-official|eee-lede|passwall2] [install|status|rollback|download|check]'
+ echo '用法：sh install.sh [eee-official|passwall2] [install|status|rollback|download|check]'
  echo 'EEE 另支持 enable 和 archive-incomplete。更改操作必须手动输入 YES。'
 }
 [ "$#" -le 2 ] || { usage; exit 2; }
@@ -30,25 +30,26 @@ for cmd in flock sha256sum stat mktemp ln; do command -v "$cmd" >/dev/null 2>&1 
 TOOL=${1:-}; ACTION=${2:-}
 if [ -z "$TOOL" ]; then
  usage
- printf '\n1 原厂 WAN EEE v1.2-r3（4.9.1-op25 / 6.12.94）\n2 LEDE WAN EEE v1（R26.10.31 / 6.12.115）\n3 原厂 Passwall2 native-r4.2（先安装 LuCI）\n0 退出\n请选择：'
+ printf '\n1 原厂 WAN EEE v1.2-r3（4.9.1-op25 / 6.12.94）\n2 原厂 Passwall2 native-r4.2（先安装 LuCI）\n0 退出\n请选择：'
  IFS= read -r answer || exit 0
- case "$answer" in 1) TOOL=eee-official;; 2) TOOL=eee-lede;; 3) TOOL=passwall2;; 0|'') exit 0;; *) fail '无效选择';; esac
+ case "$answer" in 1) TOOL=eee-official;; 2) TOOL=passwall2;; 0|'') exit 0;; *) fail '无效选择';; esac
 fi
 case "$TOOL" in
  eee-official)
   TAG=eee-v1.2-r3; ASSET=mt3600be-eee-tool-v1.2-r3.run
   SHA=baaeaafb216f845270bb477605ffa3889c166758e953454dfabee3403738efbb; SIZE=46000
   [ "$(uname -r)" = 6.12.94 ] && [ "$(cat /etc/glversion 2>/dev/null)" = 4.9.1-op25 ] || fail '原厂 EEE 版本不匹配。';;
- eee-lede)
-  TAG=eee-lede-v1; ASSET=mt3600be-eee-tool-lede-v1.run
-  SHA=4ed3294a9cd45086883d722b48436205fcaea95112eaba54bf9a5105bb7248de; SIZE=42907
-  [ "$(uname -r)" = 6.12.115 ] && grep -qx "DISTRIB_REVISION='R26.10.31'" /etc/openwrt_release || fail 'LEDE EEE 版本不匹配。';;
  passwall2)
   TAG=passwall2-native-r4.2; ASSET=passwall2-high-native-r4.2.run
   SHA=628edf81254ae180c5a0cb168db9bc31341a2a6cbbf63ee58e5be86ab9b472ad; SIZE=41489241
   [ "$(uname -r)" = 6.12.94 ] && grep -qx "DISTRIB_RELEASE='25.12.5'" /etc/openwrt_release || fail '原厂 Passwall2 版本不匹配。';;
  *) fail '未知工具';;
 esac
+# Both public tools target this exact tested official op25 beta build.
+[ "$(cat /etc/glversion 2>/dev/null)" = 4.9.1-op25 ] && [ "$(uname -r)" = 6.12.94 ] || fail '仅支持已测试的官方 4.9.1-op25 测试版。'
+for expected in "DISTRIB_RELEASE='25.12.5'" "DISTRIB_REVISION='r33051-f5dae5ece4'" "DISTRIB_TARGET='mediatek/filogic'" "DISTRIB_ARCH='aarch64_cortex-a53'"; do
+ grep -Fxq "$expected" /etc/openwrt_release || fail 'OpenWrt 测试版构建或架构不匹配；其他官方固件不能直接使用。'
+done
 if [ -z "$ACTION" ]; then
  printf '\n1 安装\n2 查询状态\n3 回滚\n4 仅下载保留\n5 校验工具\n0 退出\n请选择：'
  IFS= read -r answer || exit 0

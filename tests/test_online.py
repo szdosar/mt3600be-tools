@@ -6,7 +6,7 @@ D=Path(__file__).resolve().parents[1]
 class Online(unittest.TestCase):
  def setUp(self):
   self.tmp=tempfile.TemporaryDirectory(prefix='mt-tools-test-');self.d=Path(self.tmp.name);self.root=self.d/'root';self.root.mkdir(mode=0o700);self.bin=self.d/'bin';self.bin.mkdir();(self.d/'tmp').mkdir();(self.d/'lock').mkdir()
-  self.board=self.d/'board';self.board.write_text('glinet,gl-mt3600be\n');(self.d/'kernel').write_text('6.12.94\n');(self.d/'glversion').write_text('4.9.1-op25\n');(self.d/'release').write_text("DISTRIB_RELEASE='25.12.5'\nDISTRIB_REVISION='R26.10.31'\n")
+  self.board=self.d/'board';self.board.write_text('glinet,gl-mt3600be\n');(self.d/'kernel').write_text('6.12.94\n');(self.d/'glversion').write_text('4.9.1-op25\n');(self.d/'release').write_text("DISTRIB_RELEASE='25.12.5'\nDISTRIB_REVISION='r33051-f5dae5ece4'\nDISTRIB_TARGET='mediatek/filogic'\nDISTRIB_ARCH='aarch64_cortex-a53'\n")
   self.payload=self.d/'payload';self.payload.write_text('#!/bin/sh\nset -eu\nprintf "%s\\n" "$*" >> "'+str(self.d/'actions')+'"\nif [ -e "'+str(self.d/'hold-child')+'" ];then touch "'+str(self.d/'child-started')+'";while [ -e "'+str(self.d/'hold-child')+'" ];do sleep .05;done;fi\n[ ! -e "'+str(self.d/'fail-child')+'" ] || exit 23\n')
   self.sha=hashlib.sha256(self.payload.read_bytes()).hexdigest();src=(D/'install.sh').read_text()
   src=src.replace('PATH=/usr/sbin:/usr/bin:/sbin:/bin;',f'PATH={self.bin}:/usr/sbin:/usr/bin:/sbin:/bin;').replace('/root',str(self.root)).replace('/var/lock/mt3600be-tools-online.lock',str(self.d/'lock/online.lock')).replace('/tmp/sysinfo/board_name',str(self.board)).replace('/etc/glversion',str(self.d/'glversion')).replace('/etc/openwrt_release',str(self.d/'release')).replace('/tmp/mt3600be-online.',str(self.d/'tmp/work.')).replace('= 0:0:',f'= {os.getuid()}:{os.getgid()}:')
@@ -82,15 +82,15 @@ exec /bin/sh "$@"
   self.assertEqual(0,self.call('passwall2','rollback',input='\n').returncode);self.noexec();self.assertEqual(0,self.call('passwall2','rollback',input='YES\n').returncode);self.assertEqual('rollback --apply\n',(self.d/'actions').read_text())
  def test_18_EEE_official_command_and_decline(self):
   self.assertEqual(0,self.call('eee-official','install',input='YES\n').returncode);self.assertEqual('install --yes\n',(self.d/'actions').read_text());self.assertEqual(0,self.call('eee-official','rollback',input='NO\n').returncode);self.assertEqual(1,len((self.d/'actions').read_text().splitlines()))
- def test_19_LEDE_gate_and_command(self):
-  self.assertNotEqual(0,self.call('eee-lede','download').returncode);(self.d/'kernel').write_text('6.12.115\n');self.assertEqual(0,self.call('eee-lede','install',input='YES\n').returncode);self.assertEqual('install --yes\n',(self.d/'actions').read_text())
+ def test_19_removed_LEDE_refuses_without_download(self):
+  self.assertNotEqual(0,self.call('eee-lede','download').returncode);(self.d/'kernel').write_text('6.12.115\n');self.assertNotEqual(0,self.call('eee-lede','install',input='YES\n').returncode);self.noexec();self.assertFalse((self.d/'downloads').exists())
  def test_20_unknown_action_refuses(self):self.assertNotEqual(0,self.call('passwall2','enable').returncode);self.noexec()
  def test_21_bad_cache_permissions_not_changed(self):
   self.call('passwall2','download');self.cache().chmod(0o666);self.assertNotEqual(0,self.call('passwall2','check').returncode);self.assertEqual(0o666,self.cache().stat().st_mode&0o777);self.noexec()
  def test_22_cache_publish_competitor_not_overwritten(self):
   self.write('ln',f'#!/bin/sh\nprintf "competitor\\n" > "$2"\nexit 1\n');self.assertNotEqual(0,self.call('passwall2','install',input='YES\n').returncode);self.noexec();self.assertEqual('competitor\n',self.cache().read_text());self.clean()
  def test_23_interactive_menu(self):
-  p=self.call(input='3\n2\n');self.assertEqual(0,p.returncode,p.stderr);self.assertEqual('status\n',(self.d/'actions').read_text())
+  p=self.call(input='2\n2\n');self.assertEqual(0,p.returncode,p.stderr);self.assertEqual('status\n',(self.d/'actions').read_text())
  def test_24_lock_link_refuses(self):
   (self.d/'lock/online.lock').symlink_to(self.payload);b=self.payload.read_bytes();self.assertNotEqual(0,self.call('passwall2','download').returncode);self.assertEqual(b,self.payload.read_bytes());self.noexec()
  def test_25_check_argument(self):self.assertEqual(0,self.call('passwall2','check').returncode);self.assertEqual('--check\n',(self.d/'actions').read_text())
@@ -102,6 +102,24 @@ exec /bin/sh "$@"
   self.write('cp','#!/bin/sh\nprintf broken > "$2"\nexit 0\n');self.assertNotEqual(0,self.call('passwall2','install',input='YES\n').returncode);self.noexec();self.assertFalse(self.cache().exists());self.clean()
  def test_28_stage_write_failure_cleans_only_owned_file(self):
   self.write('cp','#!/bin/sh\nprintf partial > "$2"\nexit 1\n');self.assertNotEqual(0,self.call('passwall2','download').returncode);self.assertFalse(self.cache().exists());self.clean()
+ def test_29_wrong_gl_version_both_tools(self):
+  (self.d/'glversion').write_text('4.9.2-op25\n')
+  for tool in ['eee-official','passwall2']:self.assertNotEqual(0,self.call(tool,'download').returncode)
+  self.noexec();self.assertFalse((self.d/'downloads').exists())
+ def test_30_other_OpenWrt_release_both_tools(self):
+  p=self.d/'release';p.write_text(p.read_text().replace('25.12.5','25.12.6'))
+  for tool in ['eee-official','passwall2']:self.assertNotEqual(0,self.call(tool,'download').returncode)
+  self.noexec()
+ def test_31_wrong_build_both_tools(self):
+  p=self.d/'release';p.write_text(p.read_text().replace('r33051-f5dae5ece4','r33052-other'))
+  for tool in ['eee-official','passwall2']:self.assertNotEqual(0,self.call(tool,'download').returncode)
+  self.noexec()
+ def test_32_arch_target_missing_fields_refuse(self):
+  p=self.d/'release';before=p.read_text()
+  for text in [before.replace('aarch64_cortex-a53','x86_64'),before.replace('mediatek/filogic','other/target'),"DISTRIB_RELEASE='25.12.5'\n"]:
+   p.write_text(text)
+   for tool in ['eee-official','passwall2']:self.assertNotEqual(0,self.call(tool,'download').returncode)
+  self.noexec();self.assertFalse((self.d/'downloads').exists())
 if __name__=='__main__':
  s=unittest.defaultTestLoader.loadTestsFromTestCase(Online);r=unittest.TextTestRunner(verbosity=2).run(s)
  report={'passed':r.wasSuccessful(),'tests_run':r.testsRun,'failures':len(r.failures),'errors':len(r.errors),'skipped':len(r.skipped),'source_sha256':hashlib.sha256((D/'install.sh').read_bytes()).hexdigest(),'scope':'isolated synthetic files and component commands; no router or real installation'}

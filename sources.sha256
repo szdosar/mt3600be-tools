@@ -1,10 +1,3 @@
-dd0ab82d55531ae0ddbd6aad6e32f6d773b5b30411b347b20285352a9136d146  src/eee-lede-v1/README.md
-b04c516e72777bfb8783f663b24b8f1a6e94c60ace2dc128c42c39f92bb22b9a  src/eee-lede-v1/eee-state.c
-ff0f064ff7efc5ec9d2ecc36d8fcf935a71a1e449859c445e52016499066b0d4  src/eee-lede-v1/hotplug
-197997e67408205b74aab003105d250839c5f7a304fd6ec8d77a7f429a30d2bb  src/eee-lede-v1/init
-9d2a4a20404696255fb5c0a3ba7661b1e2cdce21fc8ede98d19a10e0a26c1f58  src/eee-lede-v1/install.sh
-c2f97ce83a7d3ffc944c9c809320bae8fcfe0e98834c4e07720cecc85bd2fb3a  src/eee-lede-v1/menu.sh
-75924ff32d2441c42b5796d59b0fb58bdb09227f9af75da43e200ed68f8ee620  src/eee-lede-v1/mt3600be-wan-eee
 bb8d18148d4f3a89241756b02f894817188aa705b835e1794394bd0b9054e62b  src/eee-v1.2-r3/README.md
 b04c516e72777bfb8783f663b24b8f1a6e94c60ace2dc128c42c39f92bb22b9a  src/eee-v1.2-r3/eee-state.c
 ff0f064ff7efc5ec9d2ecc36d8fcf935a71a1e449859c445e52016499066b0d4  src/eee-v1.2-r3/hotplug

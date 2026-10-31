@@ -12,16 +12,6 @@ sh ./mt3600be-eee-tool-v1.2-r3.run status
 
 回滚时，把最后一行的 `status` 改成 `rollback`。EEE run 会再次要求输入 YES；也支持 enable 重新启用。
 
-## eee-lede / eee-lede-v1
-
-```sh
-cd /root/mt3600be-tools/eee-lede/eee-lede-v1 &&
-printf '%s  %s\n' '4ed3294a9cd45086883d722b48436205fcaea95112eaba54bf9a5105bb7248de' 'mt3600be-eee-tool-lede-v1.run' | sha256sum -c - &&
-sh ./mt3600be-eee-tool-lede-v1.run status
-```
-
-回滚时，把最后一行的 `status` 改成 `rollback`。EEE run 会再次要求输入 YES；也支持 enable 重新启用。
-
 ## passwall2 / passwall2-native-r4.2
 
 ```sh

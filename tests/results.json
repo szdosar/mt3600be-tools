@@ -1,9 +1,9 @@
 {
   "passed": true,
-  "tests_run": 28,
+  "tests_run": 32,
   "failures": 0,
   "errors": 0,
   "skipped": 0,
-  "source_sha256": "cc5a17f1b939306e3f657a0099e2fa951ce36616b3845faff7c68e098e1dec61",
+  "source_sha256": "5887dfe4670f47f8d614f100da46ad2e97fcdc868492a93498b4cfec0923033f",
   "scope": "isolated synthetic files and component commands; no router or real installation"
 }

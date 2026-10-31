@@ -1,6 +1,22 @@
 # MT3600BE 工具箱
 
-适用于 **GL.iNet GL-MT3600BE（Beryl 7）** 的独立工具。**不刷固件、不自动重启**。原厂与 LEDE 包严格区分；不是 GL.iNet 官方项目或厂商签名包。
+适用于 **GL.iNet GL-MT3600BE（Beryl 7）** 的独立工具。**不刷固件、不自动重启**。仅适用于下述官方 op25 测试版；本工具箱为社区项目，非 GL.iNet 官方项目。
+
+## 仅适用于这一版固件
+
+镜像的是原始测试固件，**没有预装 EEE 或 Passwall2，也不是本项目的 image-v 系列修改版固件**。先完成原厂初始化；安装 Passwall2 前先从原厂高级设置安装 LuCI，再运行工具菜单。
+
+本仓库的 EEE 与 Passwall2 工具均基于 **GL-MT3600BE 官方 op25 测试版**适配和测试：**4.9.1-op25 / OpenWrt 25.12.5 / Linux 6.12.94**，构建号 `r33051-f5dae5ece4`，APK 包管理器。
+
+- [本仓库固件镜像下载](https://github.com/szdosar/mt3600be-tools/releases/tag/firmware-op25-25.12.5)（原文件，未修改、未重新封装）。
+- [原始固件下载页面](https://github.com/wukongdaily/gl-inet-onescript/releases/tag/mt3600be)（第三方仓库提供的下载入口，不是 GL.iNet 官方仓库）。
+- 文件名：`openwrt25.12.5-mediatek-filogic-glinet_gl-mt3600be-squashfs-sysupgrade.bin`
+- SHA-256：`d4f65c9c44d0516a798fcf1b111ed7e8bdb54c9533202d02ac53c35d5e81239c`
+- 已核对该发布附件摘要与本地用于适配的原始固件一致；[机器可读记录](firmware.json)。
+
+**不表示兼容所有官方固件。** 4.9.0、其他 4.9.x、其他 op25 构建、LEDE、ImmortalWrt 均不能据此直接安装。不要跳过版本、架构、PHY 或内核 ABI 检查。脚本不自动下载或刷写固件；刷机需求请另行核对。
+
+安装器能核对运行系统版本字段与组件 ABI，不能仅凭这些字段证明用户实际刷入的镜像字节。准备固件时请核对上面的原始镜像摘要。
 
 ## 小白怎么用
 
@@ -17,9 +33,9 @@ trap 'rm -f -- "$t"' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 trap '' HUP
-curl -q --fail --location --proto '=https' --proto-redir '=https' --connect-timeout 15 --max-time 120 --max-filesize 1048576 --output "$t" https://github.com/szdosar/mt3600be-tools/releases/download/online-v1/install.sh
+curl -q --fail --location --proto '=https' --proto-redir '=https' --connect-timeout 15 --max-time 120 --max-filesize 1048576 --output "$t" https://github.com/szdosar/mt3600be-tools/releases/download/online-v1.1/install.sh
 [ -s "$t" ]
-printf '%s  %s\n' 'cc5a17f1b939306e3f657a0099e2fa951ce36616b3845faff7c68e098e1dec61' "$t" | sha256sum -c -
+printf '%s  %s\n' '5887dfe4670f47f8d614f100da46ad2e97fcdc868492a93498b4cfec0923033f' "$t" | sha256sum -c -
 sh -n "$t"
 sh "$t"
  )
@@ -31,11 +47,10 @@ sh "$t"
 
 | 菜单 | 支持范围 | 用途 |
 |---|---|---|
-| 原厂 WAN EEE v1.2-r3 | 原厂 4.9.1-op25 / Linux 6.12.94 / RTL8221B | 关闭 WAN EEE，保留状态查询、回滚和重新启用 |
-| LEDE WAN EEE v1 | LEDE R26.10.31 / Linux 6.12.115 / RTL8221B PHY@7 | 同上，但不接管原厂版事务 |
-| 原厂 Passwall2 native-r4.2 | 原厂 OpenWrt 25.12.5 / Linux 6.12.94，先安装 LuCI | Passwall2 26.10.20-r2 + Xray 26.10.21-r2，含 sslocal、Haproxy、Sing-box 和离线依赖 |
+| 原厂 WAN EEE v1.2-r3 | 上述官方 op25 测试版 / RTL8221B | 关闭 WAN EEE，保留状态查询、回滚和重新启用 |
+| 原厂 Passwall2 native-r4.2 | 上述官方 op25 测试版，先安装 LuCI | Passwall2 26.10.20-r2 + Xray 26.10.21-r2，含 sslocal、Haproxy、Sing-box 和离线依赖 |
 
-其他型号、固件或内核不支持，不能删除版本检查强装。不自动把几个工具同时安装。EEE 只处理 WAN，不修改 LAN。Passwall2 r4.2 完成隔离测试，仍为待用户真机验证的试用包。
+公开仓库不再提供 LEDE 工具。其他型号、固件或内核不支持，不能删除版本检查强装。不自动把几个工具同时安装。EEE 只处理 WAN，不修改 LAN。Passwall2 r4.2 完成隔离测试，仍为待用户真机验证的试用包。
 
 ## 下载与断线恢复
 
@@ -53,4 +68,4 @@ EEE 安装可能短暂重新协商 WAN 链路，建议从 LAN 管理；回滚恢
 
 Passwall2 保留原生安装行为，可能更新 DHCP `localuse`、防火墙 include、uhttpd、ucitrack；已有主开关开启时可能启动代理。保留两份插件配置的内容和权限（含 root:root 664），默认模板另存。回滚只卸载本次新增包并恢复记录的接入修改；后续配置冲突会拒绝覆盖。旧 r4/r4.1 正式事务不自动接管；仅权限预检失败可换本版重试。
 
-本仓库只发布工具源码、公共默认内容和验证摘要，不发布设备配置、节点、密码、密钥或备份。不要把路由器事务目录上传到 Issue。旧版发布按标签保留；修复采用新版本，不替换既有 run 文件。
+本仓库发布原始测试固件镜像、工具源码、公共默认内容和验证摘要，不发布设备配置、节点、密码、密钥或备份。不要把路由器事务目录上传到 Issue。包含 LEDE 入口的 online-v1 已撤下，使用 online-v1.1；其他旧版发布按标签保留；修复采用新版本，不替换既有 run 文件。
