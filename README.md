@@ -2,6 +2,11 @@
 
 适用于 **GL.iNet GL-MT3600BE（Beryl 7）** 的独立工具。**不刷固件、不自动重启**。仅适用于下述官方 op25 测试版；本工具箱为社区项目，非 GL.iNet 官方项目。
 
+## 这些工具解决什么问题
+
+- **WAN EEE 有线稳定工具**：针对指定官方 op25 测试版固件中，**WAN 口协商为 1 Gbps 时与 EEE 节能功能相关的丢包、断流问题**，通过关闭 WAN EEE 规避，并提供开机生效、状态查询和回滚。只处理 WAN，不处理 LAN；不能作为所有网线、网口或上游故障的通用修复。
+- **Passwall2 科学研究工具**：用于**网络代理、协议测试和连通性分析等科学研究**，提供代理与流量分流管理。离线安装包包含 Passwall2、Xray、sslocal、Haproxy、Sing-box 及匹配依赖，解决该测试版固件上依赖配套和离线安装的问题。**不附带代理节点或订阅**，安装后需自行配置；先从原厂高级设置安装 LuCI。
+
 ## 仅适用于这一版固件
 
 镜像的是原始测试固件，**没有预装 EEE 或 Passwall2，也不是本项目的 image-v 系列修改版固件**。先完成原厂初始化；安装 Passwall2 前先从原厂高级设置安装 LuCI，再运行工具菜单。
@@ -33,15 +38,15 @@ trap 'rm -f -- "$t"' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 trap '' HUP
-curl -q --fail --location --proto '=https' --proto-redir '=https' --connect-timeout 15 --max-time 120 --max-filesize 1048576 --output "$t" https://github.com/szdosar/mt3600be-tools/releases/download/online-v1.2/install.sh
+curl -q --fail --location --proto '=https' --proto-redir '=https' --connect-timeout 15 --max-time 120 --max-filesize 1048576 --output "$t" https://github.com/szdosar/mt3600be-tools/releases/download/online-v1.2.1/install.sh
 [ -s "$t" ]
-printf '%s  %s\n' '8edfd7b9885068d002de410e3cc8f5c10febef05b4e00c328a6da49af48d5100' "$t" | sha256sum -c -
+printf '%s  %s\n' 'eca4a13e7cf30cdfec72e1ae39c53a2429310963864c5d8dc5d8a37f35d74514' "$t" | sha256sum -c -
 sh -n "$t"
 sh "$t"
  )
 ```
 
-当前在线入口为 **online-v1.2**。无需另装 `stat`：缺少时自动使用目标固件自带的 `ucode` 文件系统接口，继续核对类型、权限、大小和锁身份；任一检查失败都停止。
+当前在线入口为 **online-v1.2.1**。无需另装 `stat`：缺少时自动使用目标固件自带的 `ucode` 文件系统接口，继续核对类型、权限、大小和锁身份；任一检查失败都停止。
 
 需要可正常验证 HTTPS 的网络和系统时间，以及 `curl`、`sha256sum`、`flock`。缺少命令会停止，不自动改软件源、代理或 DNS。此前看到“缺少 stat”的用户，重新复制本页最新整段命令即可，不必删除旧配置、缓存、事务或备份。首次下载失败可重试同一段命令；不要使用 `-k` 或关闭校验，也不要使用来历不明的加速镜像。无需 GitHub 登录、Token 或提供路由器密码给脚本。
 
@@ -49,8 +54,8 @@ sh "$t"
 
 | 菜单 | 支持范围 | 用途 |
 |---|---|---|
-| 原厂 WAN EEE v1.2-r3 | 上述官方 op25 测试版 / RTL8221B | 关闭 WAN EEE，保留状态查询、回滚和重新启用 |
-| 原厂 Passwall2 native-r4.2 | 上述官方 op25 测试版，先安装 LuCI | Passwall2 26.10.20-r2 + Xray 26.10.21-r2，含 sslocal、Haproxy、Sing-box 和离线依赖 |
+| 原厂 WAN EEE v1.2-r3 | 上述官方 op25 测试版 / RTL8221B | 规避 1G WAN 链路下与 EEE 相关的丢包，支持查询和回滚 |
+| 原厂 Passwall2 native-r4.2 | 上述官方 op25 测试版，先安装 LuCI | 科学研究、代理与分流管理；Passwall2 26.10.20-r2 + Xray 26.10.21-r2，含匹配依赖 |
 
 其他型号、固件或内核不支持，不能删除版本检查强装。不自动把几个工具同时安装。EEE 只处理 WAN，不修改 LAN。Passwall2 r4.2 完成隔离测试，仍为待用户真机验证的试用包。
 

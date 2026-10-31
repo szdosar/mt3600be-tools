@@ -4,6 +4,6 @@
   "failures": 0,
   "errors": 0,
   "skipped": 0,
-  "source_sha256": "8edfd7b9885068d002de410e3cc8f5c10febef05b4e00c328a6da49af48d5100",
+  "source_sha256": "eca4a13e7cf30cdfec72e1ae39c53a2429310963864c5d8dc5d8a37f35d74514",
   "scope": "isolated synthetic files and component commands; no router or real installation"
 }

@@ -1,5 +1,5 @@
 #!/bin/sh
-# MT3600BE online tools v1.2. Fixed releases; no remote shell evaluation.
+# MT3600BE online tools v1.2.1. Fixed releases; no remote shell evaluation.
 set -eu
 umask 077
 PATH=/usr/sbin:/usr/bin:/sbin:/bin; export PATH
@@ -19,6 +19,8 @@ trap signal_stop INT TERM
 trap '' HUP
 usage() {
  echo 'MT3600BE 工具：安装、查询、回滚；不刷机、不自动重启。'
+ echo 'WAN EEE：用于指定官方 op25 测试版 WAN 在 1G 链路下与 EEE 相关的丢包、断流，通过关闭 WAN EEE 规避。'
+ echo 'Passwall2：用于网络代理、协议测试和连通性分析等科学研究，提供代理与分流管理；需自行配置节点。'
  echo '用法：sh install.sh [eee-official|passwall2] [install|status|rollback|download|check]'
  echo 'EEE 另支持 enable 和 archive-incomplete。更改操作必须手动输入 YES。'
 }
@@ -68,7 +70,7 @@ meta identity / >/dev/null && meta identity-follow / >/dev/null || fail '文件�
 TOOL=${1:-}; ACTION=${2:-}
 if [ -z "$TOOL" ]; then
  usage
- printf '\n1 原厂 WAN EEE v1.2-r3（4.9.1-op25 / 6.12.94）\n2 原厂 Passwall2 native-r4.2（先安装 LuCI）\n0 退出\n请选择：'
+ printf '\n1 WAN EEE v1.2-r3：1G 有线 WAN 丢包修复（指定 op25）\n2 Passwall2 native-r4.2：网络代理与科学研究（先安装 LuCI）\n0 退出\n请选择：'
  IFS= read -r answer || exit 0
  case "$answer" in 1) TOOL=eee-official;; 2) TOOL=passwall2;; 0|'') exit 0;; *) fail '无效选择';; esac
 fi
@@ -106,9 +108,11 @@ path_identity=$(meta identity "$LOCK") || fail '无法读取锁路径身份。'
 case "$ACTION" in install|rollback|enable|archive-incomplete)
  echo "工具：$TOOL；固定版本：$TAG；操作：$ACTION"
  if [ "$TOOL" = passwall2 ]; then
+  echo '用途：网络代理、协议测试与连通性分析等科学研究；需要自行配置节点或订阅。'
   echo '保留原生安装行为：可能更新 DHCP localuse、防火墙 include、uhttpd 和 ucitrack；旧主开关开启时可能启动代理。'
   echo '回滚仅删除本次新增包并按事务恢复接入；配置冲突会停止。安装前请备份，并先从原厂页面安装 LuCI。'
  else
+  echo '用途：规避指定 op25 测试版 WAN 在 1G 链路下与 EEE 相关的丢包；不能修复所有网线或上游故障。'
   echo '仅处理 WAN EEE，可能短暂重新协商链路；建议通过 LAN 管理。回滚恢复已保存的原始 EEE。'
   [ "$ACTION" != archive-incomplete ] || echo '归档保留旧快照；以后重新安装会采集新的回滚基线。'
  fi
