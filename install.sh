@@ -1,5 +1,5 @@
 #!/bin/sh
-# MT3600BE online tools v1.1. Fixed releases; no remote shell evaluation.
+# MT3600BE online tools v1.2. Fixed releases; no remote shell evaluation.
 set -eu
 umask 077
 PATH=/usr/sbin:/usr/bin:/sbin:/bin; export PATH
@@ -26,7 +26,45 @@ usage() {
 case "${1:-}" in --help|help) usage; exit 0;; esac
 [ "$(id -u)" = 0 ] || fail '请在路由器 SSH 内以 root 执行。'
 [ "$(cat /tmp/sysinfo/board_name 2>/dev/null)" = glinet,gl-mt3600be ] || fail '仅支持 GL-MT3600BE；未执行。'
-for cmd in flock sha256sum stat mktemp ln; do command -v "$cmd" >/dev/null 2>&1 || fail "缺少 $cmd；未安装任何软件。"; done
+for cmd in flock sha256sum mktemp ln; do command -v "$cmd" >/dev/null 2>&1 || fail "缺少 $cmd；未安装任何软件。"; done
+# Use the firmware's fs API when its BusyBox lacks the stat applet.
+# Backend failures are fatal: never replace a failed check with guessed metadata.
+if command -v stat >/dev/null 2>&1; then META_BACKEND=stat
+elif command -v ucode >/dev/null 2>&1; then META_BACKEND=ucode
+else fail '缺少 stat 和 ucode，无法安全检查文件；未安装任何软件。'
+fi
+read_meta() {
+ if [ "$META_BACKEND" = stat ]; then
+  case "$1" in
+   mode) stat -c '%u:%g:%a' "$2";;
+   size) stat -c '%s' "$2";;
+   identity) stat -c '%d:%i' "$2";;
+   identity-follow) stat -Lc '%d:%i' "$2";;
+   *) return 2;;
+  esac
+ else
+  ucode -e '
+import { stat, lstat } from "fs";
+let op = ARGV[0], path = ARGV[1];
+if (length(ARGV) != 2) exit(2);
+let s = (op == "identity-follow") ? stat(path) : lstat(path);
+if (!s) exit(1);
+if (op == "mode") print(sprintf("%d:%d:%o\n", s.uid, s.gid, s.mode & 4095));
+else if (op == "size") print(sprintf("%d\n", s.size));
+else if (op == "identity" || op == "identity-follow")
+ print(sprintf("%d,%d:%d\n", s.dev.major, s.dev.minor, s.inode));
+else exit(2);
+' "$1" "$2"
+ fi
+}
+meta() {
+ metadata=$(read_meta "$@") || return 1
+ [ -n "$metadata" ] || return 1
+ printf '%s\n' "$metadata"
+}
+# Check the selected API before creating a lock/cache, including the follow mode.
+meta mode / >/dev/null && meta size / >/dev/null &&
+meta identity / >/dev/null && meta identity-follow / >/dev/null || fail '文件元数据读取失败；未安装任何软件。'
 TOOL=${1:-}; ACTION=${2:-}
 if [ -z "$TOOL" ]; then
  usage
@@ -59,10 +97,12 @@ case "$ACTION" in install|status|rollback|download|check) ;; enable|archive-inco
 # Stable lock inode is never deleted. Refuse unsafe existing files.
 [ ! -L "$LOCK" ] || fail '锁路径是链接。'
 if [ ! -e "$LOCK" ]; then (set -C; : > "$LOCK") 2>/dev/null || :; fi
-[ -f "$LOCK" ] && [ ! -L "$LOCK" ] && [ "$(stat -c '%u:%g:%a' "$LOCK")" = 0:0:600 ] || fail '锁归属或权限异常。'
+[ -f "$LOCK" ] && [ ! -L "$LOCK" ] && [ "$(meta mode "$LOCK")" = 0:0:600 ] || fail '锁归属或权限异常。'
 exec 8<>"$LOCK"
 flock -n 8 || { echo '另一个在线工具操作正在执行；未接管，请稍后重试。' >&2; exit 75; }
-[ "$(stat -Lc '%d:%i' /proc/$$/fd/8)" = "$(stat -c '%d:%i' "$LOCK")" ] || fail '锁文件被替换。'
+fd_identity=$(meta identity-follow /proc/$$/fd/8) || fail '无法读取已打开锁身份。'
+path_identity=$(meta identity "$LOCK") || fail '无法读取锁路径身份。'
+[ -n "$fd_identity" ] && [ "$fd_identity" = "$path_identity" ] || fail '锁文件被替换。'
 case "$ACTION" in install|rollback|enable|archive-incomplete)
  echo "工具：$TOOL；固定版本：$TAG；操作：$ACTION"
  if [ "$TOOL" = passwall2 ]; then
@@ -75,11 +115,11 @@ case "$ACTION" in install|rollback|enable|archive-incomplete)
  printf '输入 YES 确认，其他输入取消：'; IFS= read -r answer || exit 0
  [ "$answer" = YES ] || { echo '已取消，未执行。'; exit 0; };;
 esac
-safe_dir() { [ -d "$1" ] && [ ! -L "$1" ] && [ "$(stat -c '%u:%g:%a' "$1")" = 0:0:700 ] || fail "缓存目录异常：$1"; }
+safe_dir() { [ -d "$1" ] && [ ! -L "$1" ] && [ "$(meta mode "$1")" = 0:0:700 ] || fail "缓存目录异常：$1"; }
 make_dir() { if [ ! -e "$1" ] && [ ! -L "$1" ]; then mkdir -m 700 "$1" || fail '创建缓存目录失败'; fi; safe_dir "$1"; }
 verify() {
- [ -f "$1" ] && [ ! -L "$1" ] && [ "$(stat -c '%u:%g:%a' "$1")" = 0:0:600 ] || fail '下载或缓存文件类型、归属、权限异常。'
- [ "$(stat -c %s "$1")" = "$SIZE" ] || fail '文件大小不符；未执行。'
+ [ -f "$1" ] && [ ! -L "$1" ] && [ "$(meta mode "$1")" = 0:0:600 ] || fail '下载或缓存文件类型、归属、权限异常。'
+ [ "$(meta size "$1")" = "$SIZE" ] || fail '文件大小不符；未执行。'
  digest=$(sha256sum "$1") || fail '读取摘要失败。'
  [ "${digest%% *}" = "$SHA" ] || fail 'SHA-256 不符；未执行，不覆盖旧文件。'
 }

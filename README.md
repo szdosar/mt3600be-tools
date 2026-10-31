@@ -33,15 +33,17 @@ trap 'rm -f -- "$t"' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 trap '' HUP
-curl -q --fail --location --proto '=https' --proto-redir '=https' --connect-timeout 15 --max-time 120 --max-filesize 1048576 --output "$t" https://github.com/szdosar/mt3600be-tools/releases/download/online-v1.1/install.sh
+curl -q --fail --location --proto '=https' --proto-redir '=https' --connect-timeout 15 --max-time 120 --max-filesize 1048576 --output "$t" https://github.com/szdosar/mt3600be-tools/releases/download/online-v1.2/install.sh
 [ -s "$t" ]
-printf '%s  %s\n' '5887dfe4670f47f8d614f100da46ad2e97fcdc868492a93498b4cfec0923033f' "$t" | sha256sum -c -
+printf '%s  %s\n' '8edfd7b9885068d002de410e3cc8f5c10febef05b4e00c328a6da49af48d5100' "$t" | sha256sum -c -
 sh -n "$t"
 sh "$t"
  )
 ```
 
-需要可正常验证 HTTPS 的网络和系统时间，以及 `curl`、`sha256sum`、`flock`。缺少命令会停止，不自动改软件源、代理或 DNS。首次下载失败可重试同一段命令；不要使用 `-k` 或关闭校验，也不要使用来历不明的加速镜像。无需 GitHub 登录、Token 或提供路由器密码给脚本。
+当前在线入口为 **online-v1.2**。无需另装 `stat`：缺少时自动使用目标固件自带的 `ucode` 文件系统接口，继续核对类型、权限、大小和锁身份；任一检查失败都停止。
+
+需要可正常验证 HTTPS 的网络和系统时间，以及 `curl`、`sha256sum`、`flock`。缺少命令会停止，不自动改软件源、代理或 DNS。此前看到“缺少 stat”的用户，重新复制本页最新整段命令即可，不必删除旧配置、缓存、事务或备份。首次下载失败可重试同一段命令；不要使用 `-k` 或关闭校验，也不要使用来历不明的加速镜像。无需 GitHub 登录、Token 或提供路由器密码给脚本。
 
 ## 选择哪个工具
 

@@ -1,8 +1,8 @@
 {
   "passed": true,
   "router_connected": false,
-  "tests": 39,
-  "launcher_sha256": "5887dfe4670f47f8d614f100da46ad2e97fcdc868492a93498b4cfec0923033f",
+  "tests": 57,
+  "launcher_sha256": "8edfd7b9885068d002de410e3cc8f5c10febef05b4e00c328a6da49af48d5100",
   "no_credentials_or_router_backups_in_publication": true,
   "releases": [
     {

@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "tests_run": 18,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "source_sha256": "8edfd7b9885068d002de410e3cc8f5c10febef05b4e00c328a6da49af48d5100",
+  "firmware_binaries": {
+    "bin/busybox": "10003d6e1713b23a0b31ff7f0da8796486adab4afcc02f94716893422f078c54",
+    "usr/bin/ucode": "51b711c8e0016ddde3998ce66e23b387f9e57417c40f3c2c40f2694be5e29450",
+    "usr/lib/ucode/fs.so": "a616b2034e5e11dbf7d88729eb93adc9d8881b008bb4d8d0c30c345457e53632"
+  },
+  "scope": "network-isolated ARM BusyBox/ucode/fs under QEMU; synthetic uname/download/component; no router"
+}

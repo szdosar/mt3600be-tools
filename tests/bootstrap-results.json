@@ -3,7 +3,7 @@
   "tests_run": 7,
   "failures": 0,
   "errors": 0,
-  "bootstrap_sha256": "f905a58ae2e0a250133ec2f334838c72076f4a79475a49759df580f27101d330",
-  "launcher_sha256": "5887dfe4670f47f8d614f100da46ad2e97fcdc868492a93498b4cfec0923033f",
+  "bootstrap_sha256": "8dc43839f01d97de1afba332b9d82adba457374d75292591a7443e0c0692567f",
+  "launcher_sha256": "8edfd7b9885068d002de410e3cc8f5c10febef05b4e00c328a6da49af48d5100",
   "no_router": true
 }
