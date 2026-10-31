@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "date": "2026-10-31",
+  "anonymous_downloads": [
+    {
+      "tag": "firmware-op25-25.12.5",
+      "file": "openwrt25.12.5-mediatek-filogic-glinet_gl-mt3600be-squashfs-sysupgrade.bin",
+      "sha256": "d4f65c9c44d0516a798fcf1b111ed7e8bdb54c9533202d02ac53c35d5e81239c",
+      "anonymous_HTTPS_download": true,
+      "installed_or_flashed": false
+    },
+    {
+      "tag": "online-v1.1",
+      "file": "install.sh",
+      "sha256": "5887dfe4670f47f8d614f100da46ad2e97fcdc868492a93498b4cfec0923033f",
+      "anonymous_HTTPS_download": true,
+      "installed_or_flashed": false
+    }
+  ],
+  "unchanged_runs": [
+    {
+      "tag": "eee-v1.2-r3",
+      "asset_sha256": "baaeaafb216f845270bb477605ffa3889c166758e953454dfabee3403738efbb",
+      "GitHub_asset_digest_matches_unchanged_run": true
+    },
+    {
+      "tag": "passwall2-native-r4.2",
+      "asset_sha256": "628edf81254ae180c5a0cb168db9bc31341a2a6cbbf63ee58e5be86ab9b472ad",
+      "GitHub_asset_digest_matches_unchanged_run": true
+    }
+  ],
+  "installed_or_modified_router": false
+}

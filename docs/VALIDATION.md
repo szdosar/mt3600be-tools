@@ -8,3 +8,5 @@
 
 
 online-v1.1 撤下 LEDE 选项，增加两个公开工具统一的官方 op25 测试版完整版本字段检查。两个 run 字节与原发布一致；未重打包或改动原生功能。
+
+2026-10-31 已从本仓库公开 Releases 匿名重下原始固件镜像及 online-v1.1/install.sh，摘要与上游/本地记录一致；两个 run 的 GitHub 附件摘要保持不变。公开 LEDE Release 和含其菜单的 online-v1 已撤下，本机及私有仓库历史保留。[发布后校验记录](../tests/public-download-verification.json)。未刷机或安装。
