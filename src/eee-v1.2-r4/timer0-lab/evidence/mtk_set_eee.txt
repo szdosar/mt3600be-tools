@@ -1,0 +1,79 @@
+
+/home/dosar/Projects/openclaw/work/mt3600be-lan-phy-investigation-20261029/reverse-firmware-compare/official-25125/kernel-recovered-aligned.elf:     file format elf64-littleaarch64
+
+
+Disassembly of section .kernel:
+
+ffffffc0807a9750 <mtk_set_eee>:
+ffffffc0807a9750:	d503201f 	nop
+ffffffc0807a9754:	d503201f 	nop
+ffffffc0807a9758:	a9bc7bfd 	stp	x29, x30, [sp, #-64]!
+ffffffc0807a975c:	5289ba62 	mov	w2, #0x4dd3                	// #19923
+ffffffc0807a9760:	72a20c42 	movk	w2, #0x1062, lsl #16
+ffffffc0807a9764:	910003fd 	mov	x29, sp
+ffffffc0807a9768:	a9025bf5 	stp	x21, x22, [sp, #32]
+ffffffc0807a976c:	aa0003f6 	mov	x22, x0
+ffffffc0807a9770:	a90363f7 	stp	x23, x24, [sp, #48]
+ffffffc0807a9774:	b9403023 	ldr	w3, [x1, #48]
+ffffffc0807a9778:	110f9c63 	add	w3, w3, #0x3e7
+ffffffc0807a977c:	9ba27c62 	umull	x2, w3, w2
+ffffffc0807a9780:	d366fc40 	lsr	x0, x2, #38
+ffffffc0807a9784:	f278381f 	tst	x0, #0x7fff00
+ffffffc0807a9788:	540006c1 	b.ne	ffffffc0807a9860 <mtk_set_eee+0x110>  // b.any
+ffffffc0807a978c:	52a22482 	mov	w2, #0x11240000            	// #287571968
+ffffffc0807a9790:	a90153f3 	stp	x19, x20, [sp, #16]
+ffffffc0807a9794:	2a002042 	orr	w2, w2, w0, lsl #8
+ffffffc0807a9798:	aa0003f3 	mov	x19, x0
+ffffffc0807a979c:	52800020 	mov	w0, #0x1                   	// #1
+ffffffc0807a97a0:	710f9c7f 	cmp	w3, #0x3e7
+ffffffc0807a97a4:	72a22480 	movk	w0, #0x1124, lsl #16
+ffffffc0807a97a8:	1a808055 	csel	w21, w2, w0, hi  // hi = pmore
+ffffffc0807a97ac:	aa0103f4 	mov	x20, x1
+ffffffc0807a97b0:	f944aec0 	ldr	x0, [x22, #2392]
+ffffffc0807a97b4:	97ff346f 	bl	ffffffc080776970 <phylink_ethtool_set_eee>
+ffffffc0807a97b8:	2a0003f7 	mov	w23, w0
+ffffffc0807a97bc:	350003c0 	cbnz	w0, ffffffc0807a9834 <mtk_set_eee+0xe4>
+ffffffc0807a97c0:	f944d2c0 	ldr	x0, [x22, #2464]
+ffffffc0807a97c4:	3940d281 	ldrb	w1, [x20, #52]
+ffffffc0807a97c8:	b94942c2 	ldr	w2, [x22, #2368]
+ffffffc0807a97cc:	392526c1 	strb	w1, [x22, #2377]
+ffffffc0807a97d0:	39252ad3 	strb	w19, [x22, #2378]
+ffffffc0807a97d4:	53185c42 	lsl	w2, w2, #8
+ffffffc0807a97d8:	f9400803 	ldr	x3, [x0, #16]
+ffffffc0807a97dc:	11404041 	add	w1, w2, #0x10, lsl #12
+ffffffc0807a97e0:	11041021 	add	w1, w1, #0x104
+ffffffc0807a97e4:	8b214061 	add	x1, x3, w1, uxtw
+ffffffc0807a97e8:	b9000035 	str	w21, [x1]
+ffffffc0807a97ec:	3940da84 	ldrb	w4, [x20, #54]
+ffffffc0807a97f0:	11404041 	add	w1, w2, #0x10, lsl #12
+ffffffc0807a97f4:	11040021 	add	w1, w1, #0x100
+ffffffc0807a97f8:	8b214073 	add	x19, x3, w1, uxtw
+ffffffc0807a97fc:	360000a4 	tbz	w4, #0, ffffffc0807a9810 <mtk_set_eee+0xc0>
+ffffffc0807a9800:	3940d682 	ldrb	w2, [x20, #53]
+ffffffc0807a9804:	36000062 	tbz	w2, #0, ffffffc0807a9810 <mtk_set_eee+0xc0>
+ffffffc0807a9808:	3940d282 	ldrb	w2, [x20, #52]
+ffffffc0807a980c:	37000202 	tbnz	w2, #0, ffffffc0807a984c <mtk_set_eee+0xfc>
+ffffffc0807a9810:	97fff4a6 	bl	ffffffc0807a6aa8 <mtk_r32>
+ffffffc0807a9814:	12187400 	and	w0, w0, #0xffffff3f
+ffffffc0807a9818:	b9000260 	str	w0, [x19]
+ffffffc0807a981c:	a94153f3 	ldp	x19, x20, [sp, #16]
+ffffffc0807a9820:	2a1703e0 	mov	w0, w23
+ffffffc0807a9824:	a9425bf5 	ldp	x21, x22, [sp, #32]
+ffffffc0807a9828:	a94363f7 	ldp	x23, x24, [sp, #48]
+ffffffc0807a982c:	a8c47bfd 	ldp	x29, x30, [sp], #64
+ffffffc0807a9830:	d65f03c0 	ret
+ffffffc0807a9834:	2a1703e0 	mov	w0, w23
+ffffffc0807a9838:	a94153f3 	ldp	x19, x20, [sp, #16]
+ffffffc0807a983c:	a9425bf5 	ldp	x21, x22, [sp, #32]
+ffffffc0807a9840:	a94363f7 	ldp	x23, x24, [sp, #48]
+ffffffc0807a9844:	a8c47bfd 	ldp	x29, x30, [sp], #64
+ffffffc0807a9848:	d65f03c0 	ret
+ffffffc0807a984c:	97fff497 	bl	ffffffc0807a6aa8 <mtk_r32>
+ffffffc0807a9850:	321a0400 	orr	w0, w0, #0xc0
+ffffffc0807a9854:	b9000260 	str	w0, [x19]
+ffffffc0807a9858:	a94153f3 	ldp	x19, x20, [sp, #16]
+ffffffc0807a985c:	17fffff1 	b	ffffffc0807a9820 <mtk_set_eee+0xd0>
+ffffffc0807a9860:	128002b7 	mov	w23, #0xffffffea            	// #-22
+ffffffc0807a9864:	17ffffef 	b	ffffffc0807a9820 <mtk_set_eee+0xd0>
+ffffffc0807a9868:	d503201f 	nop
+ffffffc0807a986c:	d503201f 	nop

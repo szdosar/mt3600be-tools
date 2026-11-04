@@ -1,0 +1,39 @@
+
+/home/dosar/Projects/openclaw/work/mt3600be-lan-phy-investigation-20261029/reverse-firmware-compare/official-25125/kernel-recovered-aligned.elf:     file format elf64-littleaarch64
+
+
+Disassembly of section .kernel:
+
+ffffffc0807a75a8 <mtk_get_eee>:
+ffffffc0807a75a8:	d503201f 	nop
+ffffffc0807a75ac:	d503201f 	nop
+ffffffc0807a75b0:	a9bd7bfd 	stp	x29, x30, [sp, #-48]!
+ffffffc0807a75b4:	910003fd 	mov	x29, sp
+ffffffc0807a75b8:	a90153f3 	stp	x19, x20, [sp, #16]
+ffffffc0807a75bc:	aa0003f4 	mov	x20, x0
+ffffffc0807a75c0:	a9025bf5 	stp	x21, x22, [sp, #32]
+ffffffc0807a75c4:	aa0103f6 	mov	x22, x1
+ffffffc0807a75c8:	f944ac00 	ldr	x0, [x0, #2392]
+ffffffc0807a75cc:	97ff3cc7 	bl	ffffffc0807768e8 <phylink_ethtool_get_eee>
+ffffffc0807a75d0:	2a0003f3 	mov	w19, w0
+ffffffc0807a75d4:	350001a0 	cbnz	w0, ffffffc0807a7608 <mtk_get_eee+0x60>
+ffffffc0807a75d8:	f944d280 	ldr	x0, [x20, #2464]
+ffffffc0807a75dc:	52802081 	mov	w1, #0x104                 	// #260
+ffffffc0807a75e0:	b9494282 	ldr	w2, [x20, #2368]
+ffffffc0807a75e4:	72a00021 	movk	w1, #0x1, lsl #16
+ffffffc0807a75e8:	0b022021 	add	w1, w1, w2, lsl #8
+ffffffc0807a75ec:	97fffd2f 	bl	ffffffc0807a6aa8 <mtk_r32>
+ffffffc0807a75f0:	d3483c00 	ubfx	x0, x0, #8, #8
+ffffffc0807a75f4:	52807d01 	mov	w1, #0x3e8                 	// #1000
+ffffffc0807a75f8:	39652682 	ldrb	w2, [x20, #2377]
+ffffffc0807a75fc:	3900d2c2 	strb	w2, [x22, #52]
+ffffffc0807a7600:	1b017c00 	mul	w0, w0, w1
+ffffffc0807a7604:	b90032c0 	str	w0, [x22, #48]
+ffffffc0807a7608:	2a1303e0 	mov	w0, w19
+ffffffc0807a760c:	a94153f3 	ldp	x19, x20, [sp, #16]
+ffffffc0807a7610:	a9425bf5 	ldp	x21, x22, [sp, #32]
+ffffffc0807a7614:	a8c37bfd 	ldp	x29, x30, [sp], #48
+ffffffc0807a7618:	d65f03c0 	ret
+ffffffc0807a761c:	d503201f 	nop
+ffffffc0807a7620:	d503201f 	nop
+ffffffc0807a7624:	d503201f 	nop

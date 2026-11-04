@@ -11,8 +11,8 @@ class Online(unittest.TestCase):
   self.sha=hashlib.sha256(self.payload.read_bytes()).hexdigest();src=(D/'install.sh').read_text()
   src=src.replace('PATH=/usr/sbin:/usr/bin:/sbin:/bin;',f'PATH={self.bin}:/usr/sbin:/usr/bin:/sbin:/bin;').replace('/root',str(self.root)).replace('/var/lock/mt3600be-tools-online.lock',str(self.d/'lock/online.lock')).replace('/tmp/sysinfo/board_name',str(self.board)).replace('/etc/glversion',str(self.d/'glversion')).replace('/etc/openwrt_release',str(self.d/'release')).replace('/tmp/mt3600be-online.',str(self.d/'tmp/work.')).replace('= 0:0:',f'= {os.getuid()}:{os.getgid()}:')
   src=src.replace('[ "$(id -u)" = 0 ]','[ 1 = 1 ]').replace('$(uname -r)', '$(cat '+str(self.d/'kernel')+')')
-  for h in ['baaeaafb216f845270bb477605ffa3889c166758e953454dfabee3403738efbb','4ed3294a9cd45086883d722b48436205fcaea95112eaba54bf9a5105bb7248de','7651ad40e4bc429f4a28ac829e02d4af5b5d9923d9cb76b2aca42a301cc6e488']:src=src.replace(h,self.sha)
-  for n in [46000,42907,41489723]:src=src.replace('SIZE='+str(n),'SIZE='+str(self.payload.stat().st_size))
+  for h in ['b9b1b10c86fc5c21c87669a4401a2fae482f1184969c4f85f669e1f59203d074','4ed3294a9cd45086883d722b48436205fcaea95112eaba54bf9a5105bb7248de','7651ad40e4bc429f4a28ac829e02d4af5b5d9923d9cb76b2aca42a301cc6e488']:src=src.replace(h,self.sha)
+  for n in [184936,42907,41489723]:src=src.replace('SIZE='+str(n),'SIZE='+str(self.payload.stat().st_size))
   self.script=self.d/'install.sh';self.script.write_text(src)
   self.write('id','#!/bin/sh\necho 0\n');self.write('uname','#!/bin/sh\ncat '+str(self.d/'kernel')+'\n')
   self.write('curl',f'''#!/usr/bin/python3

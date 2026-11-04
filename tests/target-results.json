@@ -4,7 +4,7 @@
   "failures": 0,
   "errors": 0,
   "skipped": 0,
-  "source_sha256": "1bf93767c99771a5b34c74d6c7c3ae90706927250386fc955008222e2e4221c8",
+  "source_sha256": "658bf8496b2d74526cd36799712dbcd48059ce89c71cf873ad6293647beeeb7f",
   "firmware_binaries": {
     "bin/busybox": "10003d6e1713b23a0b31ff7f0da8796486adab4afcc02f94716893422f078c54",
     "usr/bin/ucode": "51b711c8e0016ddde3998ce66e23b387f9e57417c40f3c2c40f2694be5e29450",

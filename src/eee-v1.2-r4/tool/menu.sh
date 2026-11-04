@@ -5,7 +5,7 @@ STATE=/etc/mt3600be-wan-eee
 CLI=/usr/sbin/mt3600be-wan-eee
 usage() {
  cat <<'EOF'
-MT3600BE 有线稳定工具 v1.2（离线候选）
+MT3600BE EEE timer=0 离线研究候选（源代码，未发布安装包）
 仅适用于原厂 4.9.1-op25 / OpenWrt 25.12.5 / Linux 6.12.94。
 无参数：中文菜单；status：只读查看；install：首次安装；rollback：回滚；enable：重新启用。
 check：只验证离线包；archive-incomplete：归档不完整事务；help：使用帮助。
@@ -13,6 +13,8 @@ check：只验证离线包；archive-incomplete：归档不完整事务；help�
 不刷机、不重启、不更改 DNS、VPN、无线或插件配置。
 安装中断留下不完整事务时安全拒绝覆盖，需要人工检查，不能删除原始备份后强装。
 归档保留旧快照；再次安装使用当时新采集状态作为回滚基线，不能冒充旧快照。
+恢复配置不等于安装补丁；EEE disabled、installed 标记或目录存在均不能单独证明生效。
+未接 WAN 的 timer=0 可能在接线后自行变为1000；请查询确认，工具不会强改计时器。
 EOF
 }
 fail() { echo "$*" >&2; exit 1; }
@@ -25,7 +27,7 @@ platform() {
 }
 verify_installed() {
  [ -d "$STATE" ] && [ ! -L "$STATE" ] && [ -f "$STATE/installed" ] || fail '没有完整安装记录；不覆盖旧事务，请人工检查。'
- current=1; legacy=1; legacy2=1
+ current=1; legacy=1; legacy2=1; legacy3=1
  for pair in 'eee-state:/usr/libexec/mt3600be-eee-state' 'mt3600be-wan-eee:/usr/sbin/mt3600be-wan-eee' 'init:/etc/init.d/mt3600be-wan-eee' 'hotplug:/etc/hotplug.d/iface/98-mt3600be-wan-eee'; do
   src=${pair%%:*}; dest=${pair#*:}
   [ -f "$dest" ] && [ ! -L "$dest" ] || fail '已安装文件缺失或类型异常，安全拒绝。'
@@ -42,8 +44,13 @@ verify_installed() {
    eee-state) expected=d54c179fa995a16bef220a2571e2c3a106a31f51ea5044d85aab34669a244378;;
   esac
   [ "${actual%% *}" = "$expected" ] || legacy2=0
+  case "$src" in
+   eee-state) expected=0dd70d1880a5aad696a955bb0dd754687854dee2da4902576d174746fb7b6f43;;
+   mt3600be-wan-eee) expected=f3f9f95aa089821117739ad87505a0cf3cdec09950d085543ccdb4853e413df1;;
+  esac
+  [ "${actual%% *}" = "$expected" ] || legacy3=0
  done
- [ "$current" = 1 ] || [ "$legacy" = 1 ] || [ "$legacy2" = 1 ] || fail '已安装版本不受支持或文件损坏，安全拒绝。'
+ [ "$current" = 1 ] || [ "$legacy" = 1 ] || [ "$legacy2" = 1 ] || [ "$legacy3" = 1 ] || fail '已安装版本不受支持或文件损坏，安全拒绝。'
  (cd /; sha256sum -c "$STATE/files.sha256" >/dev/null) || fail '安装文件校验失败。'
  (cd "$STATE"; sha256sum -c original.sha256 >/dev/null) || fail '原始备份校验失败。'
  "$DIR/patch/eee-state" validate "$STATE/original.bin" >/dev/null || fail '原始备份格式或权限异常。'
@@ -63,9 +70,58 @@ legacy_rollback() {
  : > "$STATE/rolled-back" || return 1
  flock -u 9 || return 1
 }
+legacy_enable() {
+ exec 9>/var/lock/mt3600be-wan-eee.lock
+ flock -n 9 || return 75
+ verify_installed
+ "$DIR/patch/eee-state" assess || return $?
+ "$DIR/patch/eee-state" disable || return $?
+ rm -f "$STATE/rolled-back" "$STATE/disabled" || return 1
+ /etc/init.d/mt3600be-wan-eee enable || return 1
+ /etc/init.d/mt3600be-wan-eee start || return 1
+ echo '已重新启用受支持旧版；原安装文件和回滚基线未替换。'
+}
+hardware_status() {
+ echo '当前硬件只读检查（与旧快照、安装记录分开判断）：'
+ check_rc=0; "$DIR/patch/eee-state" assess || check_rc=$?
+ case "$check_rc" in
+  0) echo '当前值通过 timer=1000 范围检查；不表示补丁已安装或旧快照可恢复。';;
+  4) echo '当前状态暂不支持安全写入；未接 WAN 时请接线后重查，仍不支持则停止。旧快照不会被改写。';;
+  *) echo "读取或校验失败（$check_rc）；不能据此判断硬件生效。" >&2; return "$check_rc";;
+ esac
+}
 status() {
+ # Describe installation, recovery record, and hardware separately. Presence of
+ # a saved snapshot or EEE disabled does not establish a completed installation.
+ present=0
+ for target in /usr/libexec/mt3600be-eee-state /usr/sbin/mt3600be-wan-eee /etc/init.d/mt3600be-wan-eee /etc/hotplug.d/iface/98-mt3600be-wan-eee /etc/rc.d/S99mt3600be-wan-eee /etc/rc.d/K10mt3600be-wan-eee; do
+  if [ -e "$target" ] || [ -L "$target" ]; then present=$((present+1)); fi
+ done
  if [ ! -e "$STATE" ] && [ ! -L "$STATE" ]; then
-  echo '尚未安装；未修改任何设置。'; return 0
+  if [ "$present" != 0 ]; then
+   echo "安装状态：存在 $present 个补丁文件或链接，但缺少事务记录；不能视为完整安装或直接接管。" >&2
+   return 1
+  fi
+  echo '安装状态：未安装（补丁文件及事务记录均不存在）。'
+  echo '以下为硬件当前值；EEE disabled 不等于补丁已安装，也不证明开机持续生效。'
+  hardware_status
+  return
+ fi
+ if [ -d "$STATE" ] && [ ! -L "$STATE" ] && [ ! -e "$STATE/installed" ] && [ ! -L "$STATE/installed" ]; then
+  echo "安装状态：不完整事务；已发现 $present 个补丁文件或链接。未认定安装成功。" >&2
+  if [ -f "$STATE/original.bin" ] && [ ! -L "$STATE/original.bin" ]; then
+   rc=0; "$DIR/patch/eee-state" validate "$STATE/original.bin" >/dev/null || rc=$?
+   case "$rc" in
+    0) echo '快照格式及既有恢复范围检查通过；仍不代表事务完整或来源已核验。' >&2;;
+    4) echo '快照超出既有恢复范围，可能包含 timer=0；不能直接恢复或改成 1000。' >&2;;
+    *) echo "快照权限、格式或读取检查失败（$rc）；保留现场。" >&2;;
+   esac
+  else
+   echo '缺少可检查的普通原始快照文件；保留目录，不自动覆盖。' >&2
+  fi
+  echo '请先检查恢复配置带回的文件；无补丁残留时可显式执行 archive-incomplete 归档，之后 install 另采新基线；不会自动归档或修改旧快照。' >&2
+  hardware_status || :
+  return 1
  fi
  verify_installed
  "$CLI" status
@@ -95,7 +151,12 @@ case "$ACTION" in status|install|rollback|enable|archive-incomplete) platform;; 
 case "$ACTION" in
  status) status;;
  install)
-  if [ -e "$STATE" ] || [ -L "$STATE" ]; then verify_installed; echo '已安装同版，保留原始备份；未重复安装或重新启用。'; status; exit 0; fi
+  if [ -e "$STATE" ] || [ -L "$STATE" ]; then
+   if [ ! -f "$STATE/installed" ] || [ -L "$STATE/installed" ]; then status || :; fail '安装未执行：先按状态提示处理旧事务，不覆盖备份。'; fi
+   verify_installed
+   echo '已安装受支持版本，保留原安装文件和原始备份；未升级、未重复安装或重新启用。'
+   status; exit 0
+  fi
   echo '将保存安装前 EEE 状态，并安装开机关闭 WAN EEE 的补丁。可能短暂重新协商 WAN；建议从 LAN 管理。'
   confirm || { echo '已取消。'; exit 0; }
   sh "$DIR/patch/install.sh"
@@ -121,6 +182,8 @@ case "$ACTION" in
   rc=0
   if [ "$ACTION" = rollback ] && [ "$current" != 1 ]; then
    legacy_rollback || rc=$?
+  elif [ "$ACTION" = enable ] && [ "$current" != 1 ]; then
+   legacy_enable || rc=$?
   else
    "$CLI" "$ACTION" || rc=$?
   fi

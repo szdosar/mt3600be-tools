@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "tests": 7,
+  "failures": 0,
+  "errors": 0,
+  "scope": "isolated and ARM user-mode ioctl simulation; no router"
+}

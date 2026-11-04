@@ -1,0 +1,26 @@
+{
+  "release": "eee-v1.2-r4",
+  "passed": true,
+  "router_connected": false,
+  "zero_timer_write_enabled": false,
+  "existing_checks": 69,
+  "existing_specialized_tests": 16,
+  "timer0_tests": 36,
+  "r3_compat_and_rollback_tests": 9,
+  "new_recovery_and_ARM_tests": 7,
+  "artifact": {
+    "sha256": "b9b1b10c86fc5c21c87669a4401a2fae482f1184969c4f85f669e1f59203d074",
+    "bytes": 184936
+  },
+  "source_sha256": {
+    "tool/menu.sh": "0984356a52d9c77d4f3a6d3ac6d2379cc367bad88d0985530aa4bdefbc3baa3f",
+    "patch-v1/README.md": "7354510c0a1da08801a4376a686d4af22a6a9c1418eec853ed80f891ccf4a543",
+    "patch-v1/SHA256SUMS": "4de4926491a377570aed5af249e585da2a060b025d33dff92ebdce31ec4926e2",
+    "patch-v1/eee-state.c": "d79adda35617c604403ada1b0c2d6c99dec6a61bdc6515630cb295e67441f983",
+    "patch-v1/hotplug": "ff0f064ff7efc5ec9d2ecc36d8fcf935a71a1e449859c445e52016499066b0d4",
+    "patch-v1/init": "197997e67408205b74aab003105d250839c5f7a304fd6ec8d77a7f429a30d2bb",
+    "patch-v1/install.sh": "e0d959fb65019591c42f0eaa393b73c747cfcfb572b118e5f6dd07ac87ace7aa",
+    "patch-v1/mt3600be-wan-eee": "f3f9f95aa089821117739ad87505a0cf3cdec09950d085543ccdb4853e413df1"
+  },
+  "live_evidence_version": "v1.2-r3 on 2026-11-04; r4 not live-tested"
+}

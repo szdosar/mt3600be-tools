@@ -14,9 +14,17 @@ if [ -e "$STATE" ] || [ -L "$STATE" ]; then
  exit 1
 fi
 for target in /usr/libexec/mt3600be-eee-state /usr/sbin/mt3600be-wan-eee /etc/init.d/mt3600be-wan-eee /etc/hotplug.d/iface/98-mt3600be-wan-eee /etc/rc.d/S99mt3600be-wan-eee /etc/rc.d/K10mt3600be-wan-eee; do
- [ ! -e "$target" ] && [ ! -L "$target" ] || { echo "Existing file: $target" >&2; exit 1; }
+ [ ! -e "$target" ] && [ ! -L "$target" ] || { echo "检测到残留补丁文件或启动链接：$target；可能由恢复配置带回，拒绝覆盖。请先执行 status。" >&2; exit 1; }
 done
 if [ "$#" -gt 1 ]; then exit 2; fi
+# Assess BEFORE creating a new transaction. Saving again still validates below,
+# and disable rechecks current state to close a normal link-state change window.
+# This release deliberately does not treat timer zero as restore-compatible.
+rc=0; "$DIR/eee-state" assess || rc=$?
+if [ "$rc" != 0 ]; then
+ echo "安装前只读检查未通过（状态码 $rc）；未创建新事务、未修改 EEE。timer=0 原样恢复尚未验证；请保留旧记录，接通 WAN 后重新检查，不要强改计时器。" >&2
+ exit "$rc"
+fi
 umask 077
 early_failure() {
  rc=$?

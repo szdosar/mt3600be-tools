@@ -38,15 +38,15 @@ trap 'rm -f -- "$t"' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 trap '' HUP
-curl -q --fail --location --proto '=https' --proto-redir '=https' --connect-timeout 15 --max-time 120 --max-filesize 1048576 --output "$t" https://github.com/szdosar/mt3600be-tools/releases/download/online-v1.3/install.sh
+curl -q --fail --location --proto '=https' --proto-redir '=https' --connect-timeout 15 --max-time 120 --max-filesize 1048576 --output "$t" https://github.com/szdosar/mt3600be-tools/releases/download/online-v1.4/install.sh
 [ -s "$t" ]
-printf '%s  %s\n' '1bf93767c99771a5b34c74d6c7c3ae90706927250386fc955008222e2e4221c8' "$t" | sha256sum -c -
+printf '%s  %s\n' '658bf8496b2d74526cd36799712dbcd48059ce89c71cf873ad6293647beeeb7f' "$t" | sha256sum -c -
 sh -n "$t"
 sh "$t"
  )
 ```
 
-当前在线入口为 **online-v1.3**。无需另装 `stat`：缺少时自动使用目标固件自带的 `ucode` 文件系统接口，继续核对类型、权限、大小和锁身份；任一检查失败都停止。
+当前在线入口为 **online-v1.4**。无需另装 `stat`：缺少时自动使用目标固件自带的 `ucode` 文件系统接口，继续核对类型、权限、大小和锁身份；任一检查失败都停止。
 
 需要可正常验证 HTTPS 的网络和系统时间，以及 `curl`、`sha256sum`、`flock`。缺少命令会停止，不自动改软件源、代理或 DNS。此前看到“缺少 stat”的用户，重新复制本页最新整段命令即可，不必删除旧配置、缓存、事务或备份。首次下载失败可重试同一段命令；不要使用 `-k` 或关闭校验，也不要使用来历不明的加速镜像。无需 GitHub 登录、Token 或提供路由器密码给脚本。
 
@@ -54,10 +54,16 @@ sh "$t"
 
 | 菜单 | 支持范围 | 用途 |
 |---|---|---|
-| 原厂 WAN EEE v1.2-r3 | 上述官方 op25 测试版 / RTL8221B | 规避 1G WAN 链路下与 EEE 相关的丢包，支持查询和回滚 |
+| 原厂 WAN EEE v1.2-r4 | 上述官方 op25 测试版 / RTL8221B | 规避 1G WAN 链路下与 EEE 相关的丢包，支持查询和回滚 |
 | 原厂 Passwall2 native-r4.3 | 上述官方 op25 测试版，先安装 LuCI | 科学研究、代理与分流管理；Passwall2 26.10.20-r2 + Xray 26.10.21-r2，含匹配依赖 |
 
 其他型号、固件或内核不支持，不能删除版本检查强装。不自动把几个工具同时安装。EEE 只处理 WAN，不修改 LAN。Passwall2 r4.3 完成隔离测试，仍为待用户真机验证的试用包。
+
+## 恢复配置后安装 EEE
+
+先接好 WAN，通过 LAN 管理。新版先检查硬件再创建事务：`timer=0` 时拒绝写入、不留下新事务，接线后重新查询；已观察到接线后自然变为1000，不能据此修改旧快照。旧记录不完整时按状态提示明确归档，再新建基线；完整安装则保留文件和原始备份。[详细步骤与真机对照](docs/EEE.md)。
+
+EEE r4新增判断为离线验证；2026-11-04接线、安装、回滚的真机对照使用r3。公开Release仅保留当前入口和各工具最新版，旧下载链接将失效；已下载的旧包及设备上的旧备份不受删除Release影响。
 
 ## 下载与断线恢复
 

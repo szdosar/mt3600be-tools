@@ -84,7 +84,15 @@ int main(int ac,char **av){if(ac<2)return 2;
  }
  fd=socket(AF_INET,SOCK_DGRAM,0);if(fd<0)fail("socket");
  if(!strcmp(av[1],"read")){struct saved s=readstate();show(&s);return 0;}
- if(!strcmp(av[1],"disable")){struct saved s=readstate();s.e.cmd=ETHTOOL_SEEE;s.e.eee_enabled=0;s.e.tx_lpi_enabled=0;eth(&s.e);s=readstate();show(&s);return s.adv==0 && s.e.advertised==0 && s.e.eee_enabled==0 && s.e.tx_lpi_enabled==0 ? 0 : 7;}
+ /* Offline candidate: assess is read-only; zero has NOT been authorized for writes. */
+ if(!strcmp(av[1],"assess")){
+  struct saved s=readstate();struct ethtool_value link={.cmd=ETHTOOL_GLINK};int rc=valid(&s);
+  show(&s);eth(&link);printf("carrier=%u\n",!!link.data);
+  if(s.e.tx_lpi_timer==0){fprintf(stderr,"timer=0 原样恢复尚未验证，未写入；请接通 WAN 后重新查询，不能强改或重写旧快照。\n");return 4;}
+  if(rc){fprintf(stderr,"unsupported baseline; no write.\n");return rc;}
+  puts("timer=1000 范围检查通过；未写硬件。");return 0;
+ }
+ if(!strcmp(av[1],"disable")){struct saved s=readstate();int rc=valid(&s);if(rc){show(&s);fprintf(stderr,"Current EEE state outside validated write profile; no write.\n");return rc;}s.e.cmd=ETHTOOL_SEEE;s.e.eee_enabled=0;s.e.tx_lpi_enabled=0;eth(&s.e);s=readstate();show(&s);return s.adv==0 && s.e.advertised==0 && s.e.eee_enabled==0 && s.e.tx_lpi_enabled==0 ? 0 : 7;}
  if(ac!=3)return 2;
  if(!strcmp(av[1],"save")){struct saved s=readstate();int f=open(av[2],O_WRONLY|O_CREAT|O_EXCL|O_NOFOLLOW,0600);if(f<0)fail("save open");if(write(f,&s,sizeof(s))!=sizeof(s)||fsync(f)<0)fail("save write");close(f);show(&s);return 0;}
  if(strcmp(av[1],"validate"))return 2;

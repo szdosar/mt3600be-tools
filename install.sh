@@ -1,5 +1,5 @@
 #!/bin/sh
-# MT3600BE online tools v1.3. Fixed releases; no remote shell evaluation.
+# MT3600BE online tools v1.4. Fixed releases; no remote shell evaluation.
 set -eu
 umask 077
 PATH=/usr/sbin:/usr/bin:/sbin:/bin; export PATH
@@ -70,14 +70,14 @@ meta identity / >/dev/null && meta identity-follow / >/dev/null || fail '文件�
 TOOL=${1:-}; ACTION=${2:-}
 if [ -z "$TOOL" ]; then
  usage
- printf '\n1 WAN EEE v1.2-r3：1G 有线 WAN 丢包修复（指定 op25）\n2 Passwall2 native-r4.3：网络代理与科学研究（先安装 LuCI）\n0 退出\n请选择：'
+ printf '\n1 WAN EEE v1.2-r4：1G 有线 WAN 丢包修复（指定 op25）\n2 Passwall2 native-r4.3：网络代理与科学研究（先安装 LuCI）\n0 退出\n请选择：'
  IFS= read -r answer || exit 0
  case "$answer" in 1) TOOL=eee-official;; 2) TOOL=passwall2;; 0|'') exit 0;; *) fail '无效选择';; esac
 fi
 case "$TOOL" in
  eee-official)
-  TAG=eee-v1.2-r3; ASSET=mt3600be-eee-tool-v1.2-r3.run
-  SHA=baaeaafb216f845270bb477605ffa3889c166758e953454dfabee3403738efbb; SIZE=46000
+  TAG=eee-v1.2-r4; ASSET=mt3600be-eee-tool-v1.2-r4.run
+  SHA=b9b1b10c86fc5c21c87669a4401a2fae482f1184969c4f85f669e1f59203d074; SIZE=184936
   [ "$(uname -r)" = 6.12.94 ] && [ "$(cat /etc/glversion 2>/dev/null)" = 4.9.1-op25 ] || fail '原厂 EEE 版本不匹配。';;
  passwall2)
   TAG=passwall2-native-r4.3; ASSET=passwall2-high-native-r4.3.run
@@ -113,7 +113,8 @@ case "$ACTION" in install|rollback|enable|archive-incomplete)
   echo '回滚仅删除本次新增包并按事务恢复接入；配置冲突会停止。安装前请备份，并先从原厂页面安装 LuCI。'
  else
   echo '用途：规避指定 op25 测试版 WAN 在 1G 链路下与 EEE 相关的丢包；不能修复所有网线或上游故障。'
-  echo '仅处理 WAN EEE，可能短暂重新协商链路；建议通过 LAN 管理。回滚恢复已保存的原始 EEE。'
+  echo '仅处理 WAN EEE，可能短暂重新协商链路；建议通过 LAN 管理。回滚恢复当前事务的原始 EEE。'
+  echo '恢复配置不等于补丁已安装；timer=0时不强装，请接WAN后查询。旧快照归档与新基线分开保存。'
   [ "$ACTION" != archive-incomplete ] || echo '归档保留旧快照；以后重新安装会采集新的回滚基线。'
  fi
  printf '输入 YES 确认，其他输入取消：'; IFS= read -r answer || exit 0
