@@ -1,0 +1,66 @@
+{
+  "passed": true,
+  "files": [
+    {
+      "tag": "eee-v1.2-r4",
+      "name": "INSTALL.md",
+      "sha256": "7354510c0a1da08801a4376a686d4af22a6a9c1418eec853ed80f891ccf4a543"
+    },
+    {
+      "tag": "eee-v1.2-r4",
+      "name": "SHA256SUMS",
+      "sha256": "ed61ddc9e141a55ff1f265a9d62a59f4c4d44aa3bddba3e48d58e5dccab2342e"
+    },
+    {
+      "tag": "eee-v1.2-r4",
+      "name": "mt3600be-eee-tool-v1.2-r4.run",
+      "sha256": "b9b1b10c86fc5c21c87669a4401a2fae482f1184969c4f85f669e1f59203d074"
+    },
+    {
+      "tag": "eee-v1.2-r4",
+      "name": "mt3600be-eee-tool-v1.2-r4.sha256",
+      "sha256": "3f4661ddbf3c5ab792c50b7488c7cb5752f397bd60dbab8115bdf9bd1471fbe3"
+    },
+    {
+      "tag": "eee-v1.2-r4",
+      "name": "mt3600be-eee-tool-v1.2-r4.zip",
+      "sha256": "dc997f4d28a1c5dca748dacfa7f4c467cc321c7bb332304a4abd659d57260ffb"
+    },
+    {
+      "tag": "eee-v1.2-r4",
+      "name": "mt3600be-eee-tool-v1.2-r4.zip.sha256",
+      "sha256": "fb46fa49d639ab2ab0d9d1695b0a93b55fc85c18cda3e43022c6b4acf854ff32"
+    },
+    {
+      "tag": "online-v1.4",
+      "name": "README.md",
+      "sha256": "cf9743647c1419c9b0baa49aa61ace9c8932813a2b508da978b9102180760e7a"
+    },
+    {
+      "tag": "online-v1.4",
+      "name": "SHA256SUMS",
+      "sha256": "76b344d4b2c5e39537bb7c3abf24fc3eb3864303dca3f68b12fe30defe5386bc"
+    },
+    {
+      "tag": "online-v1.4",
+      "name": "bootstrap.sh",
+      "sha256": "28e8777082e6929a3ea1b70d91af8b5402426d49c08fff6bffb96aac7f2cd781"
+    },
+    {
+      "tag": "online-v1.4",
+      "name": "catalog.json",
+      "sha256": "2ea7aceffa466a167a7cbe9b891b96dd7f7abf28b4bef9bf4996aacdec4b0f6d"
+    },
+    {
+      "tag": "online-v1.4",
+      "name": "install.sh",
+      "sha256": "658bf8496b2d74526cd36799712dbcd48059ce89c71cf873ad6293647beeeb7f"
+    },
+    {
+      "tag": "online-v1.4",
+      "name": "install.sha256",
+      "sha256": "269cdf94ed275e7c47f2c3116e6d03e69b1351dbd2fec70646d96560f2c7bd51"
+    }
+  ],
+  "executed_downloaded_scripts": false
+}

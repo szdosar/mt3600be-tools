@@ -1,0 +1,14 @@
+{
+  "releases": [
+    "eee-v1.2-r4",
+    "firmware-op25-25.12.5",
+    "online-v1.4",
+    "passwall2-native-r4.3"
+  ],
+  "tags": [
+    "eee-v1.2-r4",
+    "firmware-op25-25.12.5",
+    "online-v1.4",
+    "passwall2-native-r4.3"
+  ]
+}
