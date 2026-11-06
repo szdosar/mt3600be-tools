@@ -19,7 +19,9 @@ for p in D.rglob('*'):
  assert p.suffix not in ['.run','.apk','.bin','.zip','.pem','.key'],p
  assert p.name not in ['shadow','authorized_keys','original.bin','config.yaml','identity.secret','authtoken.secret'],p
  data=p.read_bytes();assert not re.search(rb'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}',data),p
-for name in ['install.sh','bootstrap.sh','install.sha256','README.md','catalog.json']:
+# Published online-v1.4 README is immutable; main README may document new standalone tools.
+assert sha(A/'online-v1.4/README.md')=='cf9743647c1419c9b0baa49aa61ace9c8932813a2b508da978b9102180760e7a'
+for name in ['install.sh','bootstrap.sh','install.sha256','catalog.json']:
  assert (A/'online-v1.4'/name).read_bytes()==(D/name).read_bytes(),name
 cat=json.loads((D/'catalog.json').read_text());rows=[]
 pw=json.loads((D/'tests/passwall2-r4.3-validation.json').read_text())

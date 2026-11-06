@@ -11,6 +11,12 @@ class Gate(unittest.TestCase):
  def refused(self):
   self.assertNotEqual(self.run_gate().returncode,0);self.assertFalse((self.r/'tests/publication-audit.json').exists())
  def test_current_pass(self):self.assertEqual(self.run_gate().returncode,0)
+ def test_release_readme_tamper_stops(self):
+  old=A/'online-v1.4/README.md'
+  # Use a separate asset tree; never mutate the original release staging.
+  local=Path(self.t.name)/'assets';shutil.copytree(A,local)
+  (local/'online-v1.4/README.md').write_text(old.read_text()+'\nchanged\n')
+  self.assertNotEqual(subprocess.run([sys.executable,str(self.r/'tests/check_release.py'),str(local)],capture_output=True).returncode,0)
  def test_failed_eee_test_stops_and_removes_stale_pass(self):
   p=self.r/'tests/eee-r4-validation.json';v=json.loads(p.read_text());v['passed']=False;p.write_text(json.dumps(v));self.rehash();self.refused()
  def test_source_changed_even_with_new_manifest_stops(self):
